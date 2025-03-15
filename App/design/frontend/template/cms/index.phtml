@@ -1,0 +1,746 @@
+<?php
+// Fetch product images
+$product = $this->getImages();
+?>
+<title>Modern Footwear Showcase</title>
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary-color: #111111;
+        --secondary-color: #333333;
+        --accent-color: #e0e0e0;
+        --text-light: #ffffff;
+        --text-dark: #111111;
+        --text-gray: #777777;
+        --background-light: #f8f8f8;
+        --card-bg: #ffffff;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        --container-width: 90%;
+        --container-max-width: 1400px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body.footwear-showcase {
+        font-family: 'Inter', sans-serif;
+        background: var(--background-light);
+        color: var(--text-dark);
+        min-height: 100vh;
+        padding: 40px 0;
+    }
+
+    /* Shared Container Styles */
+    .container {
+        width: var(--container-width);
+        max-width: var(--container-max-width);
+        margin: 0 auto;
+        position: relative;
+    }
+
+    /* Main Showcase Header */
+    .showcase-header {
+        text-align: center;
+        margin-bottom: 50px;
+        padding: 0 20px;
+    }
+
+    .showcase-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+        letter-spacing: -0.5px;
+    }
+
+    .showcase-header p {
+        font-size: 1.1rem;
+        font-weight: 400;
+        max-width: 600px;
+        margin: 0 auto;
+        color: var(--text-gray);
+        line-height: 1.6;
+    }
+
+    /* Hero Slider */
+    .hero-slider-container {
+        margin-bottom: 80px;
+    }
+
+    .swiper-hero {
+        width: 100%;
+        height: 600px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px var(--shadow-color);
+    }
+
+    .swiper-hero .swiper-slide {
+        position: relative;
+        overflow: hidden;
+        background: var(--primary-color);
+        display: flex;
+        align-items: center;
+    }
+
+    .hero-image-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 60%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .swiper-hero .swiper-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center right;
+        transition: var(--transition);
+        padding: 40px;
+    }
+
+    .hero-product-info {
+        position: relative;
+        z-index: 10;
+        width: 50%;
+        max-width: 500px;
+        padding-left: 10%;
+        transition: var(--transition);
+    }
+
+    .hero-product-info h2 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--text-light);
+        letter-spacing: -1px;
+        line-height: 1.1;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-product-info .description {
+        font-size: 1.1rem;
+        color: var(--accent-color);
+        margin-bottom: 25px;
+        max-width: 400px;
+        line-height: 1.6;
+    }
+
+    .hero-product-info .price {
+        display: inline-block;
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--text-light);
+        margin-bottom: 30px;
+    }
+
+    .hero-product-info .cta-button {
+        display: inline-block;
+        background: var(--text-light);
+        color: var(--text-dark);
+        font-weight: 600;
+        padding: 12px 32px;
+        border-radius: 4px;
+        text-decoration: none;
+        letter-spacing: 0.5px;
+        transition: var(--transition);
+        text-transform: uppercase;
+        font-size: 0.9rem;
+    }
+
+    .hero-product-info .cta-button:hover {
+        background: var(--accent-color);
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Custom Hero Navigation */
+    .hero-pagination {
+        position: absolute;
+        bottom: 30px;
+        left: 10%;
+        z-index: 20;
+        width: auto;
+    }
+
+    .hero-pagination .swiper-pagination-bullet {
+        width: 12px;
+        height: 12px;
+        background: rgba(255, 255, 255, 0.5);
+        opacity: 1;
+        margin: 0 5px;
+        transition: var(--transition);
+    }
+
+    .hero-pagination .swiper-pagination-bullet-active {
+        background: var(--text-light);
+        width: 30px;
+        border-radius: 6px;
+    }
+
+    .hero-navigation {
+        position: absolute;
+        right: 30px;
+        bottom: 30px;
+        display: flex;
+        z-index: 20;
+    }
+
+    .hero-button-prev,
+    .hero-button-next {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin: 0 5px;
+        transition: var(--transition);
+    }
+
+    .hero-button-prev:hover,
+    .hero-button-next:hover {
+        background: var(--text-light);
+    }
+
+    .hero-button-prev:hover::after,
+    .hero-button-next:hover::after {
+        border-color: var(--text-dark);
+    }
+
+    .hero-button-prev::after,
+    .hero-button-next::after {
+        content: '';
+        width: 10px;
+        height: 10px;
+        border-top: 2px solid white;
+        border-right: 2px solid white;
+        transition: var(--transition);
+    }
+
+    .hero-button-prev::after {
+        transform: rotate(-135deg);
+        margin-left: 5px;
+    }
+
+    .hero-button-next::after {
+        transform: rotate(45deg);
+        margin-right: 5px;
+    }
+
+    /* Product Cards Slider */
+    .product-cards-container {
+        margin-bottom: 60px;
+    }
+
+    .products-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+        padding: 0 20px;
+    }
+
+    .products-section-header h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        letter-spacing: -0.5px;
+    }
+
+    .view-all {
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        padding: 5px 0;
+        border-bottom: 2px solid transparent;
+    }
+
+    .view-all:hover {
+        color: var(--text-dark);
+        border-bottom-color: var(--text-dark);
+    }
+
+    .view-all::after {
+        content: '→';
+        margin-left: 5px;
+        transition: var(--transition);
+    }
+
+    .view-all:hover::after {
+        margin-left: 10px;
+    }
+
+    .swiper-products-wrapper {
+        position: relative;
+        padding-bottom: 50px;
+    }
+
+    .swiper-products {
+        width: 100%;
+        padding: 20px 10px;
+        overflow: visible;
+    }
+
+    .product-card {
+        background: var(--card-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px var(--shadow-color);
+        transition: var(--transition);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-image {
+        height: 240px;
+        overflow: hidden;
+        position: relative;
+        background: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .product-image img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        transition: var(--transition);
+    }
+
+    .product-card:hover .product-image img {
+        transform: scale(1.08);
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: var(--primary-color);
+        color: var(--text-light);
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .product-info {
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        background: var(--card-bg);
+    }
+
+    .product-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 5px;
+        letter-spacing: -0.3px;
+    }
+
+    .product-category {
+        font-size: 0.85rem;
+        color: var(--text-gray);
+        margin-bottom: 15px;
+    }
+
+    .product-price {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+    }
+
+    .product-action {
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .view-product {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+        text-decoration: none;
+        padding-bottom: 3px;
+        border-bottom: 2px solid transparent;
+        transition: var(--transition);
+    }
+
+    .view-product:hover {
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+    }
+
+    .add-to-cart {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .add-to-cart:hover {
+        background: var(--secondary-color);
+        transform: scale(1.1);
+    }
+
+    .add-to-cart::before,
+    .add-to-cart::after {
+        content: '';
+        position: absolute;
+        background: white;
+    }
+
+    .add-to-cart::before {
+        width: 16px;
+        height: 2px;
+    }
+
+    .add-to-cart::after {
+        width: 2px;
+        height: 16px;
+    }
+
+    /* Products Navigation */
+    .products-navigation {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .products-button-prev,
+    .products-button-next {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin: 0 8px;
+        transition: var(--transition);
+    }
+
+    .products-button-prev:hover,
+    .products-button-next:hover {
+        background: var(--secondary-color);
+        transform: scale(1.1);
+    }
+
+    .products-button-prev::after,
+    .products-button-next::after {
+        content: '';
+        width: 9px;
+        height: 9px;
+        border-top: 2px solid white;
+        border-right: 2px solid white;
+        transition: var(--transition);
+    }
+
+    .products-button-prev::after {
+        transform: rotate(-135deg);
+        margin-left: 3px;
+    }
+
+    .products-button-next::after {
+        transform: rotate(45deg);
+        margin-right: 3px;
+    }
+
+    .products-pagination {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    .products-pagination .swiper-pagination-bullet {
+        width: 10px;
+        height: 10px;
+        background: rgba(0, 0, 0, 0.2);
+        opacity: 1;
+        margin: 0 5px;
+        transition: var(--transition);
+    }
+
+    .products-pagination .swiper-pagination-bullet-active {
+        background: var(--primary-color);
+        width: 25px;
+        border-radius: 5px;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 1200px) {
+        .hero-product-info h2 {
+            font-size: 3rem;
+        }
+    }
+
+    @media (max-width: 991px) {
+        .swiper-hero {
+            height: 500px;
+        }
+
+        .hero-product-info {
+            width: 60%;
+            padding-left: 5%;
+        }
+
+        .hero-image-container {
+            width: 50%;
+        }
+
+        .hero-product-info h2 {
+            font-size: 2.5rem;
+        }
+
+        .hero-product-info .description {
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .showcase-header h1 {
+            font-size: 2rem;
+        }
+
+        .swiper-hero {
+            height: 500px;
+        }
+
+        .hero-product-info {
+            width: 100%;
+            padding: 0 5%;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .hero-image-container {
+            width: 100%;
+            opacity: 0.3;
+        }
+
+        .hero-product-info h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .hero-product-info .description {
+            margin: 0 auto 20px;
+        }
+
+        .hero-product-info .price {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .hero-pagination {
+            left: 5%;
+        }
+    }
+
+    @media (max-width: 575px) {
+        .showcase-header h1 {
+            font-size: 1.7rem;
+        }
+
+        .swiper-hero {
+            height: 450px;
+        }
+
+        .hero-product-info h2 {
+            font-size: 1.7rem;
+        }
+
+        .hero-product-info .description {
+            font-size: 0.9rem;
+        }
+
+        .hero-product-info .cta-button {
+            padding: 10px 25px;
+            font-size: 0.8rem;
+        }
+
+        .products-section-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .products-section-header h2 {
+            margin-bottom: 15px;
+        }
+
+        .product-image {
+            height: 200px;
+        }
+    }
+</style>
+
+
+<div class="footwear-showcase">
+    <div class="showcase-header container">
+
+    </div>
+
+    <!-- Hero Product Slider -->
+    <div class="hero-slider-container container">
+        <div class="swiper swiper-hero">
+            <div class="swiper-wrapper">
+                <?php foreach ($product as $products): ?>
+                    <div class="swiper-slide">
+                        <div class="hero-product-info">
+                            <h2><?php echo $products->getName(); ?></h2>
+                            <div class="description"><?php echo $products->getDescription(); ?></div>
+                            <div class="price"><?php echo $products->getPrice() . ' rs'; ?></div>
+                            <a href="<?php echo $this->getUrl('catalog/product/list') . '/?product_id=' . $products->getProductId(); ?>"
+                                class="cta-button">Shop Now</a>
+                        </div>
+                        <div class="hero-image-container">
+                            <img src="<?php echo Mage::getBaseUrl() . $products->getFilePath(); ?>"
+                                alt="<?php echo $products->getName(); ?>">
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="hero-pagination"></div>
+
+            <div class="hero-navigation">
+                <div class="hero-button-prev"></div>
+                <div class="hero-button-next"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Cards Slider -->
+    <div class="product-cards-container container">
+        <div class="products-section-header">
+            <h2>New Arrivals</h2>
+            <a href="#" class="view-all">View All Shoes</a>
+        </div>
+
+        <div class="swiper-products-wrapper">
+            <div class="swiper swiper-products">
+                <div class="swiper-wrapper">
+                    <?php foreach ($product as $products): ?>
+                        <div class="swiper-slide">
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="<?php echo Mage::getBaseUrl() . $products->getFilePath(); ?>"
+                                        alt="<?php echo $products->getName(); ?>">
+                                    <div class="product-badge">New</div>
+                                </div>
+                                <div class="product-info">
+                                    <div class="product-name"><?php echo $products->getName(); ?></div>
+                                    <div class="product-dicription" <?php echo $products->getDescription(); ?>></div>
+                                    <div class="product-price"><?php echo $products->getPrice() . ' rs'; ?></div>
+                                    <div class="product-action">
+                                        <a href="catalog/product/view/?id=<?php echo $products->getProductId(); ?>"
+                                            class="view-product">View Details</a>
+                                        <div class="add-to-cart" title="Add to Cart"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <div class="products-pagination"></div>
+            <div class="products-navigation">
+                <div class="products-button-prev"></div>
+                <div class="products-button-next"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Hero Slider
+        const heroSwiper = new Swiper(".swiper-hero", {
+            effect: "fade",
+            speed: 1000,
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false
+            },
+            pagination: {
+                el: ".hero-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".hero-button-next",
+                prevEl: ".hero-button-prev",
+            },
+        });
+
+        // Products Slider
+        const productsSwiper = new Swiper(".swiper-products", {
+            slidesPerView: 1,
+            spaceBetween: 25,
+            loop: true,
+            autoplay: {
+                delay: 3500,
+                disableOnInteraction: false
+            },
+            pagination: {
+                el: ".products-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".products-button-next",
+                prevEl: ".products-button-prev",
+            },
+            breakpoints: {
+                576: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                },
+                992: {
+                    slidesPerView: 3,
+                    spaceBetween: 25,
+                },
+                1200: {
+                    slidesPerView: 4,
+                    spaceBetween: 30,
+                },
+            },
+        });
+    });
+</script>

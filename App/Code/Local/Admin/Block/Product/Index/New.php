@@ -1,22 +1,32 @@
 <?php
-
 class Admin_Block_Product_Index_New extends Core_Block_Template
 {
-    public $data;
-
-    public function getProductdata()
+    // protected $_product;
+    public function getProduct()
     {
+        print_r('<pre>');
         $request = Mage::getModel('core/request');
-        // print_r($request);
-        $id = $request->getQuery('id');
-        return Mage::getModel('admin/product_index')->load($id);
-    }
-    public function getcategorydata()
-    {
-        $category = Mage::getModel('catalog/category')
-            ->getCollection();
-        $data = $category->getdata();
-        // $data->save();
+        $productId = $request->getQuery('product_id');
+        $data = Mage::getModel('catalog/product')
+            ->load($productId);
+
         return $data;
+    }
+    public function getCategories()
+    {
+        $data = Mage::getModel('catalog/category')->getCollection()->getData();
+        return $data;
+    }
+    public function getAttributes()
+    {
+        $data = Mage::getModel('catalog/attribute')->getCollection()->getData();
+        return $data;
+    }
+    public function getHtmlField($field, $data)
+    {
+        $field = ucfirst(strtolower($field));
+        $className = sprintf("Admin_Block_Html_Elements_%s", $field);
+        $element = new $className($data);
+        return $element->render();
     }
 }

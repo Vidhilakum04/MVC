@@ -1,0 +1,81 @@
+<?php
+$categories = $this->getCategories();
+?>
+<!-- Filters (Left Side, 3 columns) -->
+
+<div class="col-md-3">
+    <!-- Left Sidebar for Filters -->
+    <div class="card p-3 shadow-sm" id="filterContainer">
+        <h5 class="fw-bold text-center">Filters</h5>
+
+        <!-- Category Filter -->
+        <div class="mb-3">
+            <label class="fw-bold">Category: </label>
+            <?php foreach ($categories as $data): ?>
+                <input type="checkbox" name="catalog_product" id="category" value="<?php echo $data->getCategoryId(); ?>">
+                <label for="category"><?php echo $data->getName(); ?></label>
+            <?php endforeach; ?>
+            </select>
+        </div>
+
+        <!-- Price Range Filter -->
+        <div class="mb-3">
+            <label class="fw-bold">Price Range</label>
+            <div class="row">
+                <div class="col-6">
+                    <input type="number" name="min_price" class="form-control filter-input" placeholder="Min">
+                </div>
+                <div class="col-6">
+                    <input type="number" name="max_price" class="form-control filter-input" placeholder="Max">
+                </div>
+            </div>
+        </div>
+
+        <!-- Color Filter -->
+        <div class="mb-3">
+            <label class="fw-bold">Color</label>
+            <input type="text" name="color" class="form-control filter-input" placeholder="Color">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="button" id="fetchbtn" class="btn btn-primary w-100">Apply Filters</button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        function fetchFilteredProducts(event) {
+            if (event) event.preventDefault();
+            console.log('Fetching filtered products...');
+
+            let params = {};
+
+            $('.filter-input').each(function() {
+                let key = $(this).attr('name');
+                let value = $(this).val();
+                if (value) {
+                    params[key] = value;
+                }
+            });
+            console.log(params);
+
+            $.ajax({
+                url: window.location.href,
+                type: 'GET',
+                data: params,
+                success: function(response) {
+                    console.log("Filtered products received:", response);
+                    let newContent = $(response).find('#productContainer').html();
+                    $('#productContainer').html(newContent);
+                },
+                error: function() {
+                    console.error("Error fetching products");
+                }
+            });
+        }
+
+        $('#fetchbtn').click(fetchFilteredProducts);
+        $('.filter-input').on('change keyup', fetchFilteredProducts);
+    });
+</script>

@@ -8,7 +8,6 @@ class Core_Block_Layout extends Core_Block_Template
     {
         $this->prepareChild();
         $this->prepareJsCss();
-        // $this->prepareCss();
 
         $this->_template = "page/root.phtml";
     }
@@ -34,10 +33,5 @@ class Core_Block_Layout extends Core_Block_Template
     public function prepareJsCss()
     {
         $head = $this->getChild('head');
-        // print_r($head);
-
-        // $this->getChild('head');
-        // $this->addJs();
-        // $this->addCss();
     }
 }

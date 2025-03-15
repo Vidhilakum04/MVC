@@ -1,16 +1,15 @@
 <?php
-
 class Admin_Block_Product_Index_List extends Core_Block_Template
 {
-
-    public $data;
     public function listData()
     {
-
-        $request = Mage::getModel('catalog/product')
+        $request = Mage::getModel('core/request');
+        $product = Mage::getModel('catalog/product')
             ->getCollection();
-        // print_r($request);
-        $data = $request->getData();
-        return $data;
+        // $categoryid = $request->getQuery('categoryid');
+
+        // $product->addFieldToFilter('main_table.category_id', $categoryid);
+        $product = $product->getData();
+        return $product;
     }
 }

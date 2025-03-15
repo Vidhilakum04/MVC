@@ -4,8 +4,8 @@ class Core_Model_Request
     protected $_moduleName;
     protected $_controlleName;
     protected $_actionName;
-    protected $_baseUrl = "http://localhost/PHP/MVC/";
-    protected $_baseDirectory = "C:/xampp/htdocs/php/mvc/";
+    protected $_baseUrl = "http://localhost/PHP/E-commerce/";
+    protected $_baseDirectory = "C:/xampp/htdocs/PHP/E-commerce/";
 
     public function __construct()
     {
@@ -30,30 +30,62 @@ class Core_Model_Request
     }
     public static function getparam($field)
     {
+
         if (isset($_POST[$field])) {
-            // print_r($_POST);
             return $_POST[$field];
         } else {
             return '';
         }
+        // If the parameter exists in $_POST, it returns its value.
+        // If the parameter is not found, it returns an empty string ("").
     }
-    public static function getQuery($field)
+    public static function getQuery($field = NULL)
     {
-        if (isset($_GET[$field])) {
-            return $_GET[$field];
+        if (is_null($field)) {
+            return $_GET;
         } else {
-            return '';
+            if (isset($_GET[$field])) {
+                return $_GET[$field];
+            } else {
+                return '';
+            }
         }
     }
     public function getRequestUri()
     {
         $uri = $_SERVER['REQUEST_URI'];
-        $uri = str_replace("/PHP/MVC/", "", $uri);
-        // print_r($uri);
+        $uri = str_replace("/PHP/E-commerce/", "", $uri);
         return $uri;
+        //Retrieves the full request URI from $_SERVER['REQUEST_URI'].
+        // Removes the base path ("/PHP/E-commerce/") to get a clean URI.
     }
-    public function getParams()
+    public function getParams() //Returns all POST parameters
     {
-        return $_POST;
+        return $_POST; //Can be used when multiple form fields are submitted.
+    }
+    public function isAjax()
+    {
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            //request is ajax
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function isPost()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function isGet()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -1,0 +1,144 @@
+<?php
+$shipping = $this->getShippingData();
+$billing = $this->getBillingData();
+$cart = $this->cartData();
+?>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4 fw-bold">Checkout</h2>
+
+    <form id="checkout-form" method="POST" action="<?php echo $this->getUrl('*/*/addProduct') ?>"
+        class="p-4 shadow rounded bg-light">
+
+        <!-- Common Email Field -->
+        <div class="mb-3">
+            <label class="fw-bold">Email Address</label>
+            <input type="email" name="customer_email" value="<?php echo $cart->getCustomerEmail() ?>"
+                class="form-control" required>
+        </div>
+
+        <!-- Shipping Address -->
+        <h4 class="fw-bold">Shipping Address</h4>
+        <div id="shipping-form" class="row g-3">
+            <input type="hidden" name="shipping[address_type]" value="Shipping" id="shipping-type">
+            <input type="hidden" name="shipping[address_id]" value="<?php echo $shipping->getAddressId() ?>"
+                id="billing-type">
+            <div class="col-md-6">
+                <label class="fw-bold">First Name</label>
+                <input type="text" name="shipping[first_name]" value="<?php echo $shipping->getFirstName() ?>"
+                    class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-bold">Last Name</label>
+                <input type="text" name="shipping[last_name]" value="<?php echo $shipping->getLastName() ?>"
+                    class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-bold">Phone Number</label>
+                <input type="text" name="shipping[phone_number]" value="<?php echo $shipping->getPhoneNumber() ?>"
+                    class="form-control" required>
+            </div>
+            <div class="col-md-12">
+                <label class="fw-bold">Street Address</label>
+                <input type="text" name="shipping[street_address]" value="<?php echo $shipping->getStreetAddress() ?>"
+                    class="form-control" required>
+            </div>
+            <div class="col-md-4">
+                <label class="fw-bold">City</label>
+                <input type="text" name="shipping[city]" value="<?php echo $shipping->getCity() ?>" class="form-control"
+                    required>
+            </div>
+            <div class="col-md-4">
+                <label class="fw-bold">Zip Code</label>
+                <input type="text" name="shipping[zipcode]" value="<?php echo $shipping->getZipcode() ?>"
+                    class="form-control" required>
+            </div>
+            <div class="col-md-4">
+                <label class="fw-bold">Region</label>
+                <input type="text" name="shipping[region]" value="<?php echo $shipping->getRegion() ?>"
+                    class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-bold">Country</label>
+                <input type="text" name="shipping[country]" value="<?php echo $shipping->getCountry() ?>"
+                    class="form-control" required>
+            </div>
+        </div>
+
+        <!-- Same as Shipping Checkbox -->
+        <div class="form-check mt-3">
+            <input type="checkbox" id="sameAsShipping" class="form-check-input">
+            <label for="sameAsShipping" class="form-check-label fw-bold">Same as Shipping Address</label>
+        </div>
+
+        <!-- Billing Address -->
+        <h4 class="fw-bold mt-4">Billing Address</h4>
+        <div id="billing-form" class="row g-3">
+            <input type="hidden" name="billing[address_type]" value="Billing" id="billing-type">
+            <input type="hidden" name="billing[address_id]" value="<?php echo $billing->getAddressId() ?>"
+                id="billing-type">
+            <div class="col-md-6">
+                <label class="fw-bold">First Name</label>
+                <input type="text" name="billing[first_name]" value="<?php echo $billing->getFirstName() ?>"
+                    class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-bold">Last Name</label>
+                <input type="text" name="billing[last_name]" value="<?php echo $billing->getLastName() ?>"
+                    class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-bold">Phone Number</label>
+                <input type="text" name="billing[phone_number]" value="<?php echo $billing->getPhoneNumber() ?>"
+                    class="form-control" required>
+            </div>
+            <div class="col-md-12">
+                <label class="fw-bold">Street Address</label>
+                <input type="text" name="billing[street_address]" value="<?php echo $billing->getStreetAddress() ?>"
+                    class="form-control" required>
+            </div>
+            <div class="col-md-4">
+                <label class="fw-bold">City</label>
+                <input type="text" name="billing[city]" value="<?php echo $billing->getCity() ?>" class="form-control"
+                    required>
+            </div>
+            <div class="col-md-4">
+                <label class="fw-bold">Zip Code</label>
+                <input type="text" name="billing[zipcode]" value="<?php echo $billing->getZipcode() ?>"
+                    class="form-control" required>
+            </div>
+            <div class="col-md-4">
+                <label class="fw-bold">Region</label>
+                <input type="text" name="billing[region]" value="<?php echo $billing->getRegion() ?>"
+                    class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label class="fw-bold">Country</label>
+                <input type="text" name="billing[country]" value="<?php echo $billing->getCountry() ?>"
+                    class="form-control" required>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary px-5">Place Order</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#sameAsShipping').change(function() {
+            if ($(this).is(':checked')) {
+                $('#billing-form input:not([type="hidden"])').each(function() {
+                    let name = $(this).attr('name').replace('billing', 'shipping');
+                    $(this).val($('input[name="' + name + '"]').val());
+                });
+            } else {
+                $('#billing-form input:not([type="hidden"])').val('');
+            }
+        });
+    });
+</script>

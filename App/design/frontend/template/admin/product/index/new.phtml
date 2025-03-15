@@ -1,258 +1,109 @@
 <?php
-
-$data = $this->getProductdata();
-$catdata = $this->getcategorydata();
+$categories = $this->getCategories();
+$attributes = $this->getAttributes();
+$data = $this->getProduct();
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<div class="container mt-4">
+    <h2 class="mb-4">Insert Product</h2>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Form</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+    <form action="<?php echo $this->getUrl('*/*/save') ?>" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="catalog_product[product_id]" value="<?php echo $data->getProductId(); ?>">
 
-        body {
-            background-color: rgb(236, 240, 244);
-            color: #212529;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+        <!-- Product Name -->
+        <div class="mb-3">
+            <label for="name" class="form-label">Product Name</label>
+            <input type="text" class="form-control" id="name" name="catalog_product[name]"
+                value="<?php echo $data->getName(); ?>" required>
+        </div>
 
-        .form-container {
-            width: 90%;
-            max-width: 1100px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
+        <!-- Description -->
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="catalog_product[description]" rows="3"
+                required><?php echo $data->getDescription(); ?></textarea>
+        </div>
 
-        h1 {
-            text-align: center;
-            color: rgb(78, 77, 80);
-            margin-bottom: 20px;
-            font-size: 24px;
-            /* Slightly bigger title */
-        }
+        <!-- Price -->
+        <div class="mb-3">
+            <label for="price" class="form-label">Price (₹)</label>
+            <input type="number" class="form-control" id="price" name="catalog_product[price]"
+                value="<?php echo $data->getPrice(); ?>" required>
+        </div>
 
-        form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
+        <!-- Stock Quantity -->
+        <div class="mb-3">
+            <label for="stock_quantity" class="form-label">Stock Quantity</label>
+            <input type="number" class="form-control" id="stock_quantity" name="catalog_product[stock_quantity]"
+                value="<?php echo $data->getStockQuantity(); ?>" required>
+        </div>
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
+        <!-- Category Selection -->
+        <div class="mb-3">
+            <label for="category_id" class="form-label">Category</label>
+            <select class="form-select" name="catalog_product[category_id]" id="category_id" required>
+                <option value="">Select a Category</option>
+                <?php foreach ($categories as $category): ?>
+                <option value="<?php echo $category->getCategoryId(); ?>"
+                    <?php echo ($category->getCategoryId() == $data->getCategoryId()) ? 'selected' : ''; ?>>
+                    <?php echo $category->getName(); ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
 
-        label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 16px;
-        }
+        <!-- Dynamic Attributes -->
+        <?php foreach ($attributes as $attr):
+            $attrName = $attr->getName(); ?>
+        <div class="mb-3">
+            <label for="id<?php echo $attr->getAttributeId(); ?>"
+                class="form-label"><?php echo $attr->getName(); ?></label>
+            <input type="<?php echo $attr->getType(); ?>" class="form-control"
+                id="id<?php echo $attr->getAttributeId(); ?>" name="catalog_product[<?php echo $attr->getName(); ?>]"
+                value="<?php echo $data->$attrName; ?>">
+        </div>
+        <?php endforeach; ?>
 
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 3px;
-            /* Increased padding for better readability */
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            font-size: 16px;
-            /* Increased font size */
-            background: white;
-            color: #212529;
-        }
+        <!-- Image Upload -->
+        <div class="mb-3">
+            <label for="img" class="form-label">Upload Images</label>
+            <input type="file" class="form-control" name="catalog_product[img][]" id="img" multiple>
+        </div>
 
-        textarea {
-            resize: none;
-            height: 50px;
-        }
+        <!-- Image Selection Table -->
+        <div class="mb-4">
+            <h5>Select Images</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Select</th>
+                        <th>Photo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($data->getData()) && !empty($data->getFilePath())): ?>
+                    <?php foreach ($data->getFilePath() as $index => $img): ?>
+                    <tr>
+                        <td>
+                            <!-- Radio Button for Single Selection -->
+                            <input type="radio" name="catalog_product[thumbnail]" value="<?php echo $img; ?>">
 
-        .full-width {
-            grid-column: span 2;
-        }
+                            <!-- Checkbox for Multiple Selection -->
+                            <input type="checkbox" name="catalog_product[delete_img][]" value="<?php echo $img; ?>">
+                        </td>
+                        <td>
+                            <img src="<?php echo $this->getUrl() . $img; ?>" alt="Image" width="80">
+                        </td>
 
-        .btn-container {
-            grid-column: span 2;
-            text-align: center;
-        }
-
-        .btn {
-            padding: 10px 15px;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            color: #34495e;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="form-container">
-        <form method="POST" action="<?php echo $this->getUrl('*/*/save'); ?>" enctype="multipart/form-data">
-            <h2>Enter Product Details</h2>
-
-            <?php if (!empty($data) && !empty($data->getProductId())): ?>
-                <input type="hidden" value="<?php echo (!empty($data)) ? $data->getProductId() : ''; ?>"
-                    name="catlog_product[product_id]" readonly>
-            <?php endif; ?>
-
-            <div class="form-group">
-                <label for="name">Product Name:</label>
-                <input type="text" id="name" name="catlog_product[name]"
-                    value="<?php echo (!empty($data)) ? $data->getName() : ''; ?>" required>
-            </div>
-
-            <div class="form-group">
-
-                <label for="category">Category:</label>
-                <select id="category" name="catlog_product[category_id]" required>
-                    <option value="">Select Category</option>
-                    <?php foreach ($catdata as $cat):
-                        $select = "";
-                        if (!empty($data)) {
-                            $select = ($cat->getCategory_id() == $data->getCategory_id()) ? "selected" : "";
-                        } ?>
-                        <option <?php echo $select;
-                                ?> value="<?php echo $cat->getCategory_id(); ?>">
-                            <?php echo $cat->getName(); ?></option>
+                    </tr>
                     <?php endforeach; ?>
-                </select>
-            </div>
 
-            <div class="form-group">
-                <label for="description">Description:</label>
-                <textarea id="description" name="catlog_product[description]"
-                    required><?php echo (!empty($data)) ? $data->getDescription() : ''; ?></textarea>
-            </div>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
 
-            <div class="form-group">
-                <label for="price">Price:</label>
-                <input type="number" id="price" name="catlog_product[price]"
-                    value="<?php echo (!empty($data)) ? $data->getPrice() : ''; ?>" required>
-            </div>
-
-            <input type="hidden" name="old_img" value="<?php echo (!empty($data)) ? $data->getImage() : ''; ?>">
-            <div class="form-group">
-                <label for="image">Product Image:</label>
-                <?php if (!empty($result) && !empty($data->getImage())): ?>
-                    <input type="text" value="<?php echo (!empty($data)) ? $data->getImage() : ''; ?>" readonly>
-                    <img src="<?php echo $data->getImage(); ?>" alt="Product Image" width="100" height="100"
-                        style="border-radius: 5px;">
-                <?php endif; ?>
-
-                <input type="file" id="image" name="catlog_product[image]" accept="image/*">
-            </div>
-
-            <div class="form-group">
-                <label for="rating">Rating:</label>
-                <input type="range" id="rating" name="catlog_product[rating]" min="1" max="5" step="0.1"
-                    value="<?php echo (!empty($result)) ? $result[0]->getRating() : '3'; ?>"
-                    oninput="updateRatingValue(this.value)">
-                <span id="ratingValue"><?php echo (!empty($result)) ? $result[0]->getRating() : '3'; ?></span>
-            </div>
-
-            <div class="form-group">
-                <label for="color">Color:</label>
-                <input type="color" id="color" name="catlog_product[color]"
-                    value="<?php echo (!empty($data)) ? $data->getColor() : '#ff0000'; ?>"
-                    onchange="updateColorPreview(this.value)">
-                <span id="colorCode"
-                    style="margin-left: 10px; font-weight: bold; color: #34495e;"><?php echo (!empty($data)) ? $data->getColor() : '#ff0000'; ?></span>
-            </div>
-
-            <div class="form-group">
-                <label for="size">Size:</label>
-                <input type="number" id="size" name="catlog_product[size]"
-                    value="<?php echo (!empty($data)) ? $data->getSize() : ''; ?>" required>
-            </div>
-
-            <div class="form-group">
-                <label for="brand">Brand:</label>
-                <input type="text" id="brand" name="catlog_product[brand]"
-                    value="<?php echo (!empty($data)) ? $data->getBrand() : ''; ?>" required>
-            </div>
-
-            <div class="form-group">
-                <label for="warranty">Warranty (in years):</label>
-                <input type="number" id="warranty" name="catlog_product[warranty]"
-                    value="<?php echo (!empty($data)) ? $data->getWarranty() : ''; ?>" step="0.1">
-            </div>
-
-            <div class="form-group">
-                <label for="weight">Weight (kg):</label>
-                <input type="number" id="weight" name="catlog_product[weight]"
-                    value="<?php echo (!empty($data)) ? $data->getWeight() : ''; ?>" step="0.01">
-            </div>
-
-            <div class="form-group">
-                <label for="made_in">Made In:</label>
-                <select id="made_in" name="catlog_product[made_in]" required>
-                    <option value="India">India</option>
-                    <option value="China">China</option>
-                    <option value="Russia">Russia</option>
-                    <option value="USA">USA</option>
-                    <option value="UK">UK</option>
-                    <option value="France">France</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="model">Model:</label>
-                <input type="text" id="model" name="catlog_product[model]"
-                    value="<?php echo (!empty($data)) ? $data->getModel() : ''; ?>" required>
-            </div>
-            <div class="form-group">
-                <label for="mfg_date">Manufacturing Date:</label>
-                <input type="date" name="catlog_product[mfg_date]" value="<?php echo (!empty($data)) ? $data->getMfgDate() : '';
-                                                                            ?>" required>
-            </div>
-            <div class=" form-group">
-                <label for="material">Material:</label>
-                <input type="text" id="material" name="catlog_product[material]"
-                    value="<?php echo (!empty($data)) ? $data->getMaterial() : ''; ?>" required>
-            </div>
-            <div class="form-group">
-                <label for="terms">Terms and Conditions:</label>
-                <textarea id="terms" name="catlog_product[t_and_c]"
-                    required><?php echo $data->gett_and_c() ?? " "; ?></textarea>
-            </div>
-            <div class="form-group">
-                <label for="status">status:</label>
-                <select id="status" name="catlog_product[status]">
-                    <option value="">Select status</option>
-                    <option value="0" <?php echo ($data->getStatus() == 0) ? "selected" : "" ?>>disable</option>
-                    <option value="1" <?php echo ($data->getStatus() == 1) ? "selected" : "" ?>>enable</option>
-                </select>
-            </div>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
-
-    <script>
-        function updateRatingValue(value) {
-            document.getElementById('ratingValue').textContent = value;
-        }
-
-        function updateColorPreview(color) {
-            document.getElementById('colorCode').textContent = color;
-        }
-    </script>
-</body>
-
-</html>
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary w-100">Submit</button>
+    </form>
+</div>

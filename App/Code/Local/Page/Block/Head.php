@@ -8,8 +8,6 @@ class Page_Block_Head extends Core_Block_Template
         $this->setTemplate('page/head.phtml')
             ->addJs('page/common.js')
             ->addCss('page/common.css');
-        // print_r("<pre>");
-        // print_r($this);
     }
     public function addJs($file)
     {

@@ -1,0 +1,38 @@
+<?php
+$products = $this->getImages();
+// $attributes = $this->getAttributes();
+?>
+
+<!-- Product List (Right Side, 9 columns) -->
+<div class="col-md-9">
+    <div class="row g-4" id="productContainer">
+        <?php foreach ($products as $product): ?>
+            <div class="col-md-4 d-flex align-items-stretch">
+                <div class="card shadow-sm w-100">
+                    <img src="<?php echo Mage::getBaseUrl() . $product->getFilePath(); ?>"
+                        alt="<?php echo $product->getName(); ?>" class="card-img-top img-fluid"
+                        style="height: 200px; object-fit: cover;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold"><?php echo htmlspecialchars($product->getName()); ?></h5>
+                        <p class="card-text text-muted flex-grow-1">
+                            <?php echo substr($product->getDescription(), 0, 50) . '...'; ?>
+                        </p>
+                        <p class="fw-bold">SKU: <?php echo htmlspecialchars($product->getSku()); ?></p>
+                        <p class="fw-bold text-success">Price:
+                            ₹<?php echo htmlspecialchars($product->getPrice()); ?></p>
+                        <p class="text-muted">Stock: <?php echo htmlspecialchars($product->getStockQuantity()); ?>
+                        </p>
+                    </div>
+
+                    <button type="button" id="fetchbtn" class="btn btn-primary w-100">Add to Cart</button>
+
+
+
+
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+</div>
+</div>

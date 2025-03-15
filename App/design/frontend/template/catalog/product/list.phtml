@@ -1,1 +1,11 @@
-<h1>list</h1>
+<div class="container py-5">
+    <h4 class="mb-4 fw-bold text-dark text-center">Product List</h4>
+
+    <div class="row">
+        <?php
+        echo $this->getChildHtml('filter');
+        echo $this->getChildHtml('products');
+        ?>
+    </div>
+
+</div>

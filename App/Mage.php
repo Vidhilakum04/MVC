@@ -2,6 +2,7 @@
 
 class Mage
 {
+    public static $registry = [];
     public static function init()
     {
 
@@ -12,8 +13,17 @@ class Mage
     {
         $class = str_replace("/", "_Model_", $className);
         $class = ucwords($class, "_");
-        // echo $class;
         return new $class();
+    }
+    public static function getSingleton($className)
+    {
+        $class = str_replace("/", "_Model_", $className);
+        $class = ucwords($class, "_");
+        if (isset(self::$registry[$class])) {
+            return self::$registry[$class];
+        } else {
+            return self::$registry[$class] = new $class;
+        }
     }
     public static function getBlock($className)
     {
@@ -25,14 +35,27 @@ class Mage
     }
     public static function getBasedirectory()
     {
-
-        // protected $_baseUri = "http://localhost/PHP/MVC/";
-        // protected $_baseDir = 'C:\xampp\htdocs\PHP\MVC';
-
-        return  "C:/xampp/htdocs/PHP/MVC/";
+        return  "C:/xampp/htdocs/PHP/E-commerce/";
     }
     public static function getBaseUrl()
     {
-        return "http://localhost/PHP/MVC/";
+        return "http://localhost/PHP/E-commerce/";
+    }
+    public static function getBlockSingleton($className)
+    {
+        $class = str_replace("/", "_Block_", $className);
+        $class = ucwords($class, "_");
+        if (isset(self::$registry[$class])) {
+            return self::$registry[$class];
+        } else {
+            return self::$registry[$class] = new $class;
+        }
+    }
+
+    public static function log($data)
+    {
+        echo "<pre>";
+        print_r($data);
+        echo "</pre>";
     }
 }

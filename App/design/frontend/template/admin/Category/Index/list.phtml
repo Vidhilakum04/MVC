@@ -1,0 +1,39 @@
+<?php
+$category = $this->listData();
+?>
+
+<div class="container py-5">
+    <h4 class="mb-4 fw-bold text-dark">Category List</h4>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>description</th>
+                <th>parent_id</th>
+                <th>created_at</th>
+                <th>updated_at</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($category as $cate): ?>
+                <tr>
+                    <td><?php echo $cate->getCategoryId(); ?></td>
+                    <td><?php echo $cate->getName(); ?></td>
+                    <td><?php echo $cate->getDescription(); ?></td>
+
+                    <td><?php echo $cate->getParentId(); ?></td>
+                    <td><?php echo $cate->getCreatedAt(); ?></td>
+                    <td><?php echo $cate->getUpdatedAt(); ?></td>
+                    <td>
+                        <a href="new/?id=<?php echo $cate->getCategoryId(); ?>" class="btn btn-sm btn-warning">Edit</a>
+
+                        <a href="delete/?id=<?php echo $cate->getCategoryId(); ?>" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Are you sure?')">Delete</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>

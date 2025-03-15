@@ -1,100 +1,27 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
+/* <!-- CSS for Button Styling --> */
 
-body {
-    background-color: rgb(236, 240, 244);
-    color: #212529;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+    .back-to-top {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: white;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: 0.3s;
+    }
 
-.form-container {
-    width: 90%;
-    max-width: 1100px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-}
+    .back-to-top i {
+        color: #333;
+        font-size: 18px;
+    }
 
-h1 {
-    text-align: center;
-    color: rgb(78, 77, 80);
-    margin-bottom: 20px;
-    font-size: 26px;  /* Increased font size for better visibility */
-}
-
-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    font-size: 16px;
-}
-
-input,
-select,
-textarea {
-    width: 100%;
-    padding: 8px; /* Increased padding for better readability */
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    font-size: 16px;
-    background: white;
-    color: #212529;
-}
-
-textarea {
-    resize: none;
-    height: 50px;
-}
-
-.full-width {
-    grid-column: span 2;
-}
-
-.btn-container {
-    grid-column: span 2;
-    text-align: center;
-}
-
-.btn {
-    padding: 12px 20px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-/* Primary submit button */
-.btn-primary {
-    background-color: #3498db; /* Blue color */
-    color: white;
-}
-
-/* Danger button */
-.btn-danger {
-    background-color: #e74c3c; /* Red color */
-    color: white;
-}
-
-.btn:hover {
-    opacity: 0.8;
-}
+    .back-to-top:hover {
+        background: #f8f9fa;
+    }

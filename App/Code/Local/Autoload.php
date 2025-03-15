@@ -11,6 +11,5 @@ class verien_Object
 
 spl_autoload_register(function ($className) {
     $classPath = str_replace("_", "/", $className);
-    // echo " " . $classPath . " ";
     require $classPath . '.php';
 });

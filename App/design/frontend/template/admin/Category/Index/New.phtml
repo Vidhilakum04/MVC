@@ -1,0 +1,39 @@
+<?php
+$categoryData = $this->getCategorydata();
+$category = $this->getCategory();
+?>
+<div class="container mt-5">
+    <h2 class="text-center">Category Form</h2>
+    <form action="<?php echo $this->getUrl('*/*/save'); ?>" method="POST">
+        <input type="hidden" name="catalog_category[category_id]" value="<?php echo $categoryData->getCategoryId() ?>">
+
+        <div class="mb-3">
+            <label for="name" class="form-label">Category Name</label>
+            <input type="text" class="form-control" name="catalog_category[name]"
+                value="<?php echo $categoryData->getName(); ?>">
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" name="catalog_category[description]"
+                rows="3"><?php echo $categoryData->getDescription(); ?></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="parent_category">Parent Category:</label>
+            <select id="parent_category" name="catalog_category[parent_id]">
+                <option value="">Select Parent Category</option>
+                <?php foreach ($category as $cate): ?>
+                    <option value="<?php echo htmlspecialchars($cate->getCategoryId()) ?>"
+                        <?php echo ($cate->getCategoryId() == $categoryData->getParentId()) ? "selected" : ""; ?>>
+                        <?php echo htmlspecialchars($cate->getName()) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
