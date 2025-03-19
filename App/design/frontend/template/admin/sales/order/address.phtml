@@ -1,0 +1,82 @@
+<?php
+$billing = $this->getOrderModel()->getBillingAddress();
+$shipping = $this->getOrderModel()->getShippingAddress();
+?>
+
+<div class="d-flex justify-content-center m-5">
+    <div class="row w-100 d-flex justify-content-center">
+        <!-- Billing Address Card -->
+        <div class="col-md-6 d-flex justify-content-center mb-4">
+            <div class="card shadow-sm p-4 position-relative border rounded w-100" style="max-width: 500px;">
+                <div class="card-body">
+                    <h5 class="fw-bold text-uppercase mb-3">
+                        <i class="bi bi-credit-card me-2"></i>Billing Address
+                    </h5>
+                    <p class="mb-2 fw-semibold">
+                        <?php echo $billing->getFirstName() . ' ' . $billing->getLastName(); ?>
+                    </p>
+
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-telephone me-1"></i><?php echo $billing->getPhoneNumber(); ?>
+                    </p>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-geo-alt me-1"></i><?php echo $billing->getStreetAddress(); ?>,
+                        <?php echo $billing->getCity(); ?>, <?php echo $billing->getRegion(); ?>
+                    </p>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-globe me-1"></i><?php echo $billing->getCountry(); ?> -
+                        <?php echo $billing->getZipcode(); ?>
+                    </p>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-hash me-1"></i>Address ID: <?php echo $billing->getAddressId(); ?>
+                    </p>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-basket me-1"></i>Order ID: <?php echo $billing->getOrderId(); ?>
+                    </p>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-calendar me-1"></i>Created: <?php echo $billing->getCreatedAt(); ?>
+                        <br>
+                        <i class="bi bi-calendar-check me-1"></i>Updated: <?php echo $billing->getUpdatedAt(); ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipping Address Card -->
+        <div class="col-md-6 d-flex justify-content-center mb-4">
+            <div class="card shadow-sm p-4 position-relative border rounded w-100" style="max-width: 500px;">
+                <div class="card-body">
+                    <h5 class="fw-bold text-uppercase mb-3">
+                        <i class="bi bi-truck me-2"></i>Shipping Address
+                    </h5>
+                    <p class="mb-2 fw-semibold">
+                        <?php echo $shipping->getFirstName() . ' ' . $shipping->getLastName(); ?>
+                    </p>
+
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-telephone me-1"></i><?php echo $shipping->getPhoneNumber(); ?>
+                    </p>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-geo-alt me-1"></i><?php echo $shipping->getStreetAddress(); ?>,
+                        <?php echo $shipping->getCity(); ?>, <?php echo $shipping->getRegion(); ?>
+                    </p>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-globe me-1"></i><?php echo $shipping->getCountry(); ?> -
+                        <?php echo $shipping->getZipcode(); ?>
+                    </p>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-hash me-1"></i>Address ID: <?php echo $shipping->getAddressId(); ?>
+                    </p>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-basket me-1"></i>Order ID: <?php echo $shipping->getOrderId(); ?>
+                    </p>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-calendar me-1"></i>Created: <?php echo $shipping->getCreatedAt(); ?>
+                        <br>
+                        <i class="bi bi-calendar-check me-1"></i>Updated: <?php echo $shipping->getUpdatedAt(); ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

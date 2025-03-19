@@ -1,0 +1,123 @@
+<?php
+$detailData = $this->getOrderModel();
+?>
+
+<div class="container mt-4">
+    <div class="card shadow-sm p-4">
+        <h3 class="mb-4 text-uppercase text-primary border-bottom pb-2">Order Information</h3>
+
+        <div class="row g-3">
+            <!-- Order ID and Number -->
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <div class="me-3 text-secondary" style="width: 160px;">
+                        <i class="bi bi-hash me-2"></i><strong>Order ID:</strong>
+                    </div>
+                    <div><?php echo $detailData->getOrderId() ?? 'N/A'; ?></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <div class="me-3 text-secondary" style="width: 160px;">
+                        <i class="bi bi-bookmark me-2"></i><strong>Order Number:</strong>
+                    </div>
+                    <div id="detail-order-number"><?php echo $detailData->getOrderNumber() ?? 'N/A'; ?></div>
+                </div>
+            </div>
+
+            <!-- Customer ID and Email -->
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <div class="me-3 text-secondary" style="width: 160px;">
+                        <i class="bi bi-person me-2"></i><strong>Customer ID:</strong>
+                    </div>
+                    <div><?php echo $detailData->getCustomerId() ?? 'N/A'; ?></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <div class="me-3 text-secondary" style="width: 160px;">
+                        <i class="bi bi-envelope me-2"></i><strong>Customer Email:</strong>
+                    </div>
+                    <div>
+                        <a href="mailto:<?php echo $detailData->getEmail() ?? ''; ?>" id="customer_email">
+                            <?php echo $detailData->getEmail() ?? 'N/A'; ?>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dates Section -->
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <div class="me-3 text-secondary" style="width: 160px;">
+                        <i class="bi bi-calendar-plus me-2"></i><strong>Created At:</strong>
+                    </div>
+                    <div id="detail-order-date"><?php echo $detailData->getCreatedAt() ?? 'N/A'; ?></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <div class="me-3 text-secondary" style="width: 160px;">
+                        <i class="bi bi-calendar-check me-2"></i><strong>Updated At:</strong>
+                    </div>
+                    <div><?php echo $detailData->getUpdatedAt() ?? 'N/A'; ?></div>
+                </div>
+            </div>
+
+            <!-- Coupon Section -->
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <div class="me-3 text-secondary" style="width: 160px;">
+                        <i class="bi bi-ticket-perforated me-2"></i><strong>Coupon Code:</strong>
+                    </div>
+                    <div id="detail-coupon"><?php echo $detailData->getCouponCode() ?? 'N/A'; ?></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <div class="me-3 text-secondary" style="width: 160px;">
+                        <i class="bi bi-percent me-2"></i><strong>Coupon Discount:</strong>
+                    </div>
+                    <div id="detail-coupon-discount">
+                        ₹<?php echo number_format($detailData->getCouponDiscount() ?? 0, 2); ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping Section -->
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <div class="me-3 text-secondary" style="width: 160px;">
+                        <i class="bi bi-truck me-2"></i><strong>Shipping Method:</strong>
+                    </div>
+                    <div id="detail-shipping-method">
+                        <?php echo ucfirst($detailData->getShippingMethod() ?? 'N/A'); ?>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex">
+                    <div class="me-3 text-secondary" style="width: 160px;">
+                        <i class="bi bi-box-seam me-2"></i><strong>Shipping Charges:</strong>
+                    </div>
+                    <div id="detail-shipping-charges">
+                        ₹<?php echo number_format($detailData->getShippingCharges() ?? 0, 2); ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Amount - Highlighted -->
+            <div class="col-12 mt-4">
+                <div class="d-flex align-items-center p-3 bg-light rounded">
+                    <div class="me-3 text-secondary" style="width: 160px;">
+                        <i class="bi bi-currency-rupee me-2"></i><strong>Total Amount:</strong>
+                    </div>
+                    <div id="detail-total-amount" class="fw-bold fs-5 text-primary">
+                        ₹<?php echo number_format($detailData->getTotalAmount() ?? 0, 2); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

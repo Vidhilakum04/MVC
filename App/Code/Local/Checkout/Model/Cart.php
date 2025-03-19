@@ -21,7 +21,7 @@ class Checkout_Model_Cart extends Core_Model_Abstract
         $cartitemid = $cartitem->setCartId($this->getCartId());
 
         $cartitem = $cartitem->setSubTotal($productdata[0]->getPrice() * $cartData['product_quantity']);
-        // $productCart->getCollection()->preparequery($cartitem);
+
         $cartitem->save();
         return $this;
     }
@@ -33,6 +33,7 @@ class Checkout_Model_Cart extends Core_Model_Abstract
 
         return $cart;
     }
+
     public function removeItem($itemId)
     {
         $itemCollection = $this->getItemCollection()
@@ -63,23 +64,52 @@ class Checkout_Model_Cart extends Core_Model_Abstract
     {
         $itemCollection = $this->getItemCollection()->select(["SUM(main_table.sub_total)" => "total_amount"]);
         $totalSubTotal = $itemCollection->getFirstItem()->getTotalAmount();
-        $this->setTotalAmount($totalSubTotal);
 
+        // $this->setTotalAmount($totalSubTotal);
         // coupon
         $couponCode = $this->getCouponCode();
         if ($couponCode != null) {
             $couponModel = Mage::getModel("checkout/coupon");
+
             if (array_key_exists($couponCode, $couponModel->getAllCoupons())) {
                 $couponDiscount = 0;
                 if ($totalSubTotal !== 0) {
                     $couponDiscount = $couponModel->calculateDiscount($couponCode, $totalSubTotal);
+
                     $this->setCouponDiscount($couponDiscount);
                 }
             } else {
                 $this->setCouponCode("NULL");
             }
         }
+        $shipping = Mage::getModel('checkout/shipping');
+        $shippingCharges = $this->getShippingCharges();
+        $this->setTotalAmount((float)$totalSubTotal - (float)$couponDiscount + (float)$shippingCharges);
 
         return $this;
+    }
+    public function getAddressCollection()
+    {
+        $cart = Mage::getModel('checkout/cart_address')
+            ->getCollection()
+            ->addFieldToFilter('cart_id', $this->getCartId());
+
+        return $cart;
+    }
+    public function getBillingAddress()
+    {
+        $billing = $this->getAddressCollection()
+            ->addFieldToFilter('address_type', 'billing')
+            ->getFirstItem();
+
+        return $billing;
+    }
+    public function getShippingAddress()
+    {
+        $shipping = $this->getAddressCollection()
+            ->addFieldToFilter('address_type', "Shipping")
+            ->getFirstItem();
+
+        return $shipping;
     }
 }

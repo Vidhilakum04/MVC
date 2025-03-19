@@ -41,7 +41,7 @@ class Core_Model_Resource_Abstract
         // $field (optional) is the column name used for searching (default is the primary key).
 
         $field = (is_null($field) ? $this->_primarykey : $field);
-        $sql =  "SELECT * FROM {$this->_tablename} WHERE {$field}='$value' LIMIT 1";
+        $sql =  "SELECT * FROM `{$this->_tablename}` WHERE {$field}='$value' LIMIT 1";
         return  $this->getAdapter()->fetchRow($sql);
     }
 
@@ -90,12 +90,11 @@ class Core_Model_Resource_Abstract
 
 
             $sql = sprintf(
-                "INSERT INTO %s (%s) VALUES ('%s')",
+                "INSERT INTO `%s` (%s) VALUES ('%s')",
                 $this->_tablename,
                 $columns,
                 $values
             );
-
             $id = $this->getAdapter()->insert($sql);
             $model->{$this->_primarykey} = $id;
         }

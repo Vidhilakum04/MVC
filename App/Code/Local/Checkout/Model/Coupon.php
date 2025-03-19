@@ -2,7 +2,7 @@
 class Checkout_Model_Coupon extends Core_Model_Abstract
 {
     protected $_coupon = [
-        'abc1' => '50%',
+        'abc1' => '40%',
         'abc2' => '25%',
         'abc3' => '10%',
         'trial' => '100'

@@ -1,207 +1,435 @@
 <?php
-$cartItems = $this->indexAction();
+
+$cartItems = $this->getCartItems();
+// mage::log($cartItems);
 $cart = $this->cartData();
 $shippingMethods = $this->getMethods();
-// mage::log($method);
-// die;
+// $cartData = $this->getCart();
+
 $subtotal = 0;
 $shippingFee = 0; // Set a fixed shipping fee or calculate dynamically
-
 ?>
 
-<div class="container mt-4">
-    <h2 class="mb-4">Shopping Cart</h2>
-    <div class="coupon-section mt-4 p-3 border rounded">
-        <h5>Apply Coupon Code</h5>
-        <form method="POST" action="<?php echo $this->getUrl('*/*/applyCoupon'); ?>">
-            <div class="input-group">
-                <input type="text" class="form-control" name="coupon_code" placeholder="Enter coupon code">
-                <button type="submit" class="btn btn-success">Apply</button>
-            </div>
-        </form>
-    </div>
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Poppins', sans-serif;
+    }
 
-    <div class="row">
-        <?php if (!empty($cartItems)): ?>
-            <?php foreach ($cartItems as $item): ?>
-                <?php $subtotal += $item->getSubTotal() ?>
-                <?php $product = $item->getProductData(); ?>
-                <div class="col-md-4">
-                    <div class="card mb-3">
-                        <div class="text-center">
-                            <img src="<?php echo Mage::getBaseUrl() . $product->getFilePath()[0]; ?>"
-                                alt="<?php echo htmlspecialchars($product->getName()); ?>" class="card-img-top img-fluid"
-                                style="height: 200px; object-fit: cover;">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title"><?php echo htmlspecialchars($product->getName()); ?></h5>
-                            <p class="card-text"><strong>Product ID:</strong> <?php echo $product->getProductId(); ?></p>
-                            <p class="card-text"><strong>SKU:</strong> <?php echo $product->getSku(); ?></p>
-                            <p class="card-text"><strong>Price:</strong> ₹<?php echo number_format($item->getPrice(), 2); ?></p>
-                            <p class="card-text"><strong>Subtotal:</strong> ₹
-                                <span id="subtotal<?php echo $item->getItemId(); ?>">
-                                    <?php echo number_format($item->getSubTotal(), 2); ?>
-                                </span>
-                            </p>
-                            <form method="POST" action="<?php echo $this->getUrl('*/*/update') ?>" class="cart-form">
-                                <div class="d-flex align-items-center mb-2">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm quantity-decrease"
-                                        data-id="<?php echo $item->getItemId(); ?>">-</button>
-                                    <input type="number" class="form-control qty-input text-center mx-2" name="product_quantity"
-                                        data-id="<?php echo $item->getItemId(); ?>"
-                                        value="<?php echo $item->getProductQuantity(); ?>" min="1" style="width: 50px;">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm quantity-increase"
-                                        data-id="<?php echo $item->getItemId(); ?>">+</button>
-                                </div>
-                                <input type="hidden" name="item_id" value="<?php echo $item->getItemId(); ?>">
-                                <button type="submit" class="btn btn-primary update-btn w-100 mt-2">Update</button>
-                            </form>
+    .container {
+        max-width: 1200px;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+        align-items: start;
+        padding: 0 15px;
+        margin: 20px auto;
+    }
 
-                            <a href="<?php echo $this->getUrl('*/*/remove') . '/?item_id=' . $item->getItemId(); ?>"
-                                class="btn btn-danger delete-item w-100 mt-2">Remove</a>
-                        </div>
+    .cart-section {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    h2 {
+        color: #343a40;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease-in-out;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        background-color: white;
+    }
+
+    .card:hover {
+        transform: scale(1.02);
+    }
+
+    .card-body {
+        text-align: center;
+        padding: 15px;
+    }
+
+    .card-img-top {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        height: 200px;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .qty-input {
+        width: 60px;
+        text-align: center;
+        font-weight: bold;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 5px;
+    }
+
+    .update-btn,
+    .delete-item {
+        border-radius: 5px;
+        font-size: 14px;
+        padding: 10px;
+        width: 100%;
+        margin-top: 10px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .update-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+    .update-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .delete-item {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        text-align: center;
+    }
+
+    .delete-item:hover {
+        background-color: #b02a37;
+    }
+
+    .right-section {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .right-grid {
+        display: grid;
+        grid-template-rows: auto auto auto;
+        gap: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .shipping-section,
+    .coupon-section,
+    .summary-card {
+        padding: 15px;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .summary-title {
+        font-weight: bold;
+        color: #007bff;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .summary-item {
+        padding: 8px 0;
+        font-size: 16px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .summary-total {
+        font-size: 18px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid #eee;
+        padding-top: 10px;
+        margin-top: 10px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        width: 100%;
+        color: white;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        width: 100%;
+        color: white;
+        cursor: pointer;
+        font-weight: 500;
+        margin-top: 10px;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 15px 0;
+    }
+
+    .quantity-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .card-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        margin-bottom: 8px;
+        color: #6c757d;
+    }
+
+    .discount-text {
+        color: #28a745;
+    }
+
+    .shipping-option {
+        margin-bottom: 10px;
+    }
+
+    .form-check-input {
+        margin-right: 8px;
+    }
+
+    hr {
+        margin: 15px 0;
+        border: 0;
+        border-top: 1px solid #eee;
+    }
+
+    .input-group {
+        display: flex;
+        margin-bottom: 10px;
+    }
+
+    .form-control {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px 0 0 5px;
+    }
+
+    .cart-items-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            grid-template-columns: 1fr;
+        }
+
+        .cart-items-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+
+<body>
+    <h2>Shopping Cart</h2>
+
+    <div class="container">
+        <!-- Left Side - Cart Items -->
+        <div class="cart-section">
+            <?php if (empty($cartItems)): ?>
+                <div class="card">
+                    <div class="card-body">
+                        <i class="fas fa-shopping-cart fa-3x mb-3" style="color: #6c757d;"></i>
+                        <h3>Your cart is empty</h3>
+                        <p>Looks like you haven't added any products to your cart yet.</p>
                     </div>
                 </div>
+            <?php else: ?>
+                <div class="cart-items-grid">
+                    <?php foreach ($cartItems as $item): ?>
+                        <?php $subtotal += $item->getSubTotal() ?>
+                        <?php $product = $item->getProductData(); ?>
+                        <div class="card">
+                            <img src="<?php echo Mage::getBaseUrl() . $product->getFilePath()[0]; ?>"
+                                alt="<?php echo htmlspecialchars($product->getName()); ?>" class="card-img-top">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo htmlspecialchars($product->getName()); ?></h5>
+                                <p class="card-text"><strong>SKU:</strong> <?php echo $product->getSku(); ?></p>
+                                <p class="card-text"><strong>Price:</strong> ₹<?php echo number_format($item->getPrice(), 2); ?>
+                                </p>
+                                <p class="card-text"><strong>Subtotal:</strong> ₹<span
+                                        id="subtotal<?php echo $item->getItemId(); ?>"><?php echo number_format($item->getSubTotal(), 2); ?></span>
+                                </p>
 
-            <?php endforeach; ?>
-            <div class="mt-4 p-3 border rounded">
-                <h5>Order Summary</h5>
-                <p><strong>Subtotal:</strong> ₹<?php echo $subtotal; ?></p>
-                <p><strong>Shipping Fee:</strong> ₹<?php echo $shippingFee; ?></p>
-                <p><strong>Coupon Discount:</strong> ₹<?php echo $cart->getCouponDiscount(); ?></p>
-                <h5><strong>Total Amount:</strong> ₹<?php echo  $cart->getTotalAmount(); ?></h5>
+                                <form method="POST" action="<?php echo $this->getUrl('*/*/update') ?>" class="cart-form">
+                                    <div class="quantity-control">
+                                        <button type="button" class="quantity-btn quantity-decrease"
+                                            data-id="<?php echo $item->getItemId(); ?>">-</button>
+                                        <input type="number" class="qty-input" name="product_quantity"
+                                            data-id="<?php echo $item->getItemId(); ?>"
+                                            value="<?php echo $item->getProductQuantity(); ?>" min="1">
+                                        <button type="button" class="quantity-btn quantity-increase"
+                                            data-id="<?php echo $item->getItemId(); ?>">+</button>
+                                    </div>
+                                    <input type="hidden" name="item_id" value="<?php echo $item->getItemId(); ?>">
+                                    <button type="submit" class="update-btn">Update</button>
+                                </form>
 
-            </div>
-
-        <?php endif; ?>
-    </div>
-    <form id="shipping-method-form" method="POST" action="<?php echo $this->getUrl('Checkout/cart/addShipping') ?>"
-        class="card shipping-section p-4 mt-4">
-        <h4 class="fw-bold mb-3">Shipping Method</h4>
-
-        <div id="shipping-methods">
-            <?php foreach ($shippingMethods as $method => $charges): ?>
-                <div class="form-check shipping-option">
-                    <input class="form-check-input" type="radio" name="shippingMethod" id="shipping_<?php echo $method; ?>"
-                        value="<?php echo $method; ?>" required>
-                    <label class="form-check-label" for="shipping_<?php echo $method; ?>">
-                        <strong><?php echo $method; ?></strong>
-
-                        - <span>₹<?php echo number_format($charges, 2); ?></span>
-                    </label>
-                </div>
-            <?php endforeach; ?>
-            <!-- Shipping Method Selection -->
-            <!-- Shipping Method Selection Form -->
-            <form id="shipping-method-form" method="POST"
-                action="<?php echo $this->getUrl('Checkout/cart/addShipping') ?>"
-                class="card shipping-section p-4 mt-4">
-                <h4 class="fw-bold mb-3">Shipping Method</h4>
-
-                <div id="shipping-methods">
-                    <?php foreach ($shippingMethods as $method => $charges): ?>
-                        <div class="form-check shipping-option">
-                            <input class="form-check-input" type="radio" name="shippingMethod"
-                                id="shipping_<?php echo $method; ?>" value="<?php echo $method; ?>" required>
-                            <label class="form-check-label" for="shipping_<?php echo $method; ?>">
-                                <strong><?php echo $method; ?></strong>
-
-                                - <span>₹<?php echo number_format($charges, 2); ?></span>
-                            </label>
+                                <a href="<?php echo $this->getUrl('*/*/remove') . '/?item_id=' . $item->getItemId(); ?>"
+                                    class="delete-item">Remove</a>
+                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
-
-                <!-- Submit Button -->
-                <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary px-5">Submit</button>
-                </div>
-            </form>
-
+            <?php endif; ?>
         </div>
 
-        <!-- Order Summary Column -->
-        <div class="col-lg-4">
-            <div class="summary-card card p-4">
-                <h4 class="summary-title text-center">
-                    <i class="fas fa-shopping-bag me-2"></i>Order Summary
-                </h4>
-
-                <div class="d-flex justify-content-between summary-item">
-                    <span>Total Items:</span>
-                    <span class="fw-bold"><?php echo count($this->getCartProductData()); ?></span>
-                </div>
-                <hr>
-
-                <div class="d-flex justify-content-between summary-item fw-bold">
-                    <span>Items:</span>
-                    <span>Price</span>
+        <!-- Right Side - Order Details -->
+        <div class="right-section">
+            <div class="right-grid">
+                <!-- Coupon Section -->
+                <div class="coupon-section">
+                    <h5 class="summary-title">Apply Coupon Code</h5>
+                    <form method="POST" action="<?php echo $this->getUrl('*/*/applyCoupon'); ?>">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="coupon_code" placeholder="Enter coupon code"
+                                value="<?php echo $cart->getCouponCode(); ?>">
+                            <button type="submit" class="btn-primary"
+                                style="border-radius: 0 5px 5px 0; width: auto; padding: 10px 15px;">Apply</button>
+                        </div>
+                    </form>
                 </div>
 
-                <?php foreach ($this->getCartProductData() as $item): ?>
-                    <?php $product = $item->getProductData(); ?>
-                    <div class="d-flex justify-content-between summary-item">
-                        <span><?php echo ($product->getName()); ?></span>
-                        <span class="fw-bold">₹<?php echo ($item->getSubTotal()); ?></span>
+                <!-- Shipping Method Section -->
+                <div class="shipping-section">
+                    <h5 class="summary-title">Shipping Method</h5>
+                    <form id="shipping-method-form" method="POST"
+                        action="<?php echo $this->getUrl('Checkout/cart/addShipping') ?>">
+                        <div id="shipping-methods">
+                            <?php foreach ($shippingMethods as $method => $charges): ?>
+                                <div class="shipping-option">
+                                    <input class="form-check-input" type="radio" name="shippingMethod"
+                                        id="shipping_<?php echo $method; ?>" value="<?php echo $method; ?>" required>
+                                    <label class="form-check-label" for="shipping_<?php echo $method; ?>">
+                                        <strong><?php echo $method; ?></strong> -
+                                        <span>₹<?php echo number_format($charges, 2); ?></span>
+                                    </label>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <button type="submit" class="btn-primary">Apply Shipping</button>
+                    </form>
+                </div>
+
+                <!-- Order Summary Section -->
+                <div class="summary-card">
+                    <h5 class="summary-title">Order Summary</h5>
+
+                    <div class="summary-item">
+                        <span>Total Items:</span>
+                        <span><?php echo count($this->getCartItems()); ?></span>
                     </div>
-                <?php endforeach; ?>
-                <hr>
 
-                <!-- Discount Section -->
-                <div class="d-flex justify-content-between summary-item discount-text">
-                    <span>Discount:</span>
-                    <span>- ₹<?php echo number_format($cartData->getCouponDiscount(), 2); ?></span>
+                    <hr>
+
+                    <div class="summary-item">
+                        <span><strong>Items:</strong></span>
+                        <span><strong>Price</strong></span>
+                    </div>
+
+                    <?php foreach ($this->getCartItems() as $item): ?>
+                        <?php $product = $item->getProductData(); ?>
+                        <div class="summary-item">
+                            <span><?php echo ($product->getName()); ?></span>
+                            <span>₹<?php echo ($item->getSubTotal()); ?></span>
+                        </div>
+                    <?php endforeach; ?>
+
+                    <hr>
+
+
+                    <div class="summary-item discount-text">
+                        <span>Coupon Discount:</span>
+                        <span>-₹<?php echo $cart->getCouponDiscount(); ?></span>
+                    </div>
+                    <div class="summary-item discount-text">
+                        <span>Shipping Charges</span>
+                        <span>₹<?php echo number_format($cart->getShippingCharges(), 2); ?></span>
+                    </div>
+
+                    <div class="summary-total">
+                        <span>Grand Total:</span>
+                        <span>₹<?php echo $cart->getTotalAmount(); ?></span>
+                    </div>
+
+                    <a href="<?php echo $this->getUrl('checkout/cart/address'); ?>" class="btn-success">
+                        Proceed to Checkout
+                    </a>
                 </div>
-
-                <hr>
-
-                <!-- Grand Total -->
-                <div class="d-flex justify-content-between summary-total mb-3">
-                    <span>Grand Total:</span>
-                    <span>₹<?php echo $cartData->getTotalAmount(); ?></span>
-                </div>
-
-                <!-- Apply Coupon Form -->
-
             </div>
-
-            <!-- Submit Button -->
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary px-5">Submit</button>
-            </div>
-    </form>
+        </div>
+    </div>
 
 
-</div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<a href="<?php echo $this->getUrl('checkout/cart/address'); ?>" class="btn btn-success w-100 mt-3">
-    Proceed to Checkout
-</a>
-</div>
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-        $(document).on("click", ".quantity-increase", function() {
-            let qtyInput = $(this).siblings(".qty-input");
-            let newQty = parseInt(qtyInput.val()) + 1;
-            qtyInput.val(newQty);
-        });
-
-        $(document).on("click", ".quantity-decrease", function() {
-            let qtyInput = $(this).siblings(".qty-input");
-            let newQty = parseInt(qtyInput.val());
-            if (newQty > 1) {
-                newQty -= 1;
+    <script>
+        $(document).ready(function() {
+            $(document).on("click", ".quantity-increase", function() {
+                let qtyInput = $(this).siblings(".qty-input");
+                let newQty = parseInt(qtyInput.val()) + 1;
                 qtyInput.val(newQty);
+            });
+
+            $(document).on("click", ".quantity-decrease", function() {
+                let qtyInput = $(this).siblings(".qty-input");
+                let newQty = parseInt(qtyInput.val());
+                if (newQty > 1) {
+                    newQty -= 1;
+                    qtyInput.val(newQty);
+                }
+            });
+
+            function showUpdateButton(qtyInput) {
+                let form = qtyInput.closest(".cart-form");
+                form.find(".update-btn").show();
             }
         });
-
-        function showUpdateButton(qtyInput) {
-            let form = qtyInput.closest(".cart-form");
-            form.find(".update-btn").show();
-        }
-    });
-</script>
+    </script>

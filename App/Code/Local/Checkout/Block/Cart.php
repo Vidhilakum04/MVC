@@ -1,16 +1,14 @@
 <?php
 class Checkout_Block_Cart extends Core_Block_Layout
 {
-    public function indexAction()
+    public function getCartItems()
     {
         $session = Mage::getSingleton(className: 'checkout/session');
         $cart = $session->getCart();
         $cartData = $cart->getItemCollection()
             ->getData();
-
         return $cartData;
     }
-
 
     public function cartData()
     {
@@ -20,17 +18,6 @@ class Checkout_Block_Cart extends Core_Block_Layout
     }
     public function getBillingData()
     {
-        // $request = Mage::getModel('checkout/cart');
-        // $shipping = Mage::getModel('checkout/session');
-        // $cartId = $shipping->getCart()
-        //     ->getCartId();
-
-        // $addressId = Mage::getModel('checkout/cart_address')
-        //     ->getCollection()
-        //     ->addFieldToFilter('cart_id', $cartId)
-        //     ->addFieldToFilter('address_type', 'billing');
-
-        // return $addressId->getData();
         $session = Mage::getSingleton('checkout/session');
         $shipping = Mage::getModel('checkout/cart_address')
             ->getCollection()
@@ -40,15 +27,6 @@ class Checkout_Block_Cart extends Core_Block_Layout
     }
     public function getShippingData()
     {
-        // $request = Mage::getModel('checkout/cart');
-        // $shipping = Mage::getModel('checkout/session');
-        // $cartId = $shipping->getCart()
-        //     ->getCartId();
-        // $addressId = Mage::getModel('checkout/cart_address')
-        //     ->getCollection()
-        //     ->addFieldToFilter('cart_id', $cartId)
-        //     ->addFieldToFilter('address_type', 'shipping');
-        // return $addressId->getData();
         $session = Mage::getSingleton('checkout/session');
         $shipping = Mage::getModel('checkout/cart_address')
             ->getCollection()

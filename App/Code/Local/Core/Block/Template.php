@@ -3,15 +3,25 @@
 class Core_Block_Template
 {
     protected $_template;
+    protected $_parent = null;
     protected $_child = [];
+    public function getParent()
+    {
+        return $this->_parent;
+    }
+    public function setParent($parent)
+    {
+        $this->_parent = $parent;
+        return $this;
+    }
     public function toHtml()
     {
-
         include_once(Mage::getBasedirectory() . 'App/design/frontend/template/' . $this->_template);
     }
     public function addChild($key, $block)
     {
         $this->_child[$key] = $block;
+        $block->_parent = $this;
     }
     public function getChild($key)
     {

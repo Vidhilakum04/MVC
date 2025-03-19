@@ -1,0 +1,51 @@
+<?php
+$items = $this->getOrderModel()->getItemCollection();
+// mage::log($items);
+
+?>
+<div class="container mt-4">
+    <div class="card p-4">
+        <h4 class="mb-3 fw-bold">Order Review Summary</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>itemId</th>
+                        <th>productId</th>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>orderId</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($items)): ?>
+                        <?php foreach ($items as $item): ?>
+                            <?php
+                            $product = $item->getProductData();
+                            ?>
+                            <tr>
+                                <td class="fw-semibold"><?php echo $item->getItemId(); ?></td>
+                                <td class="fw-semibold"><?php echo $item->getProductId(); ?></td>
+                                <td class="d-flex align-items-center">
+                                    <img src="<?php echo $this->getUrl() . $product->getFilePath()[0]; ?>" alt="Product Image"
+                                        class="img-fluid rounded me-2" style="width: 50px; height: 50px;">
+                                    <span><?php echo $product->getName(); ?></span>
+                                </td>
+                                <td class="text-primary fw-bold">₹<?php echo number_format($item->getPrice(), 2); ?></td>
+                                <td><?php echo $item->getProductQuantity(); ?></td>
+                                <td class="fw-semibold">₹<?php echo number_format($item->getSubTotal(), 2); ?></td>
+                                <td class="fw-semibold"><?php echo $item->getOrderId(); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4" class="text-center">No order items found</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

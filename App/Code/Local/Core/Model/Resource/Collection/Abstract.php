@@ -62,7 +62,7 @@ class Core_Model_Resource_Collection_Abstract
         } else {
             $col = implode(",", $this->_select["COLUMNS"]);
         }
-        $query = sprintf("SELECT %s FROM %s as %s", $col, array_values($this->_select["FROM"])[0], array_keys($this->_select["FROM"])[0]);
+        $query = sprintf("SELECT %s FROM `%s` as %s", $col, array_values($this->_select["FROM"])[0], array_keys($this->_select["FROM"])[0]);
 
         if (isset($this->_select['JOIN_LEFT'])) {
             $leftjoinsql = "";
@@ -163,7 +163,6 @@ class Core_Model_Resource_Collection_Abstract
             // }
             $query = $query . " " . $orderBy;
         }
-        Mage::log($query);
 
         return $query;
     }
