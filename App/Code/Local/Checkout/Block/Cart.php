@@ -3,7 +3,7 @@ class Checkout_Block_Cart extends Core_Block_Layout
 {
     public function getCartItems()
     {
-        $session = Mage::getSingleton(className: 'checkout/session');
+        $session = Mage::getSingleton('checkout/session');
         $cart = $session->getCart();
         $cartData = $cart->getItemCollection()
             ->getData();
@@ -12,7 +12,7 @@ class Checkout_Block_Cart extends Core_Block_Layout
 
     public function cartData()
     {
-        $session = Mage::getSingleton(className: 'checkout/session');
+        $session = Mage::getSingleton('checkout/session');
         $cart = $session->getCart();
         return $cart;
     }

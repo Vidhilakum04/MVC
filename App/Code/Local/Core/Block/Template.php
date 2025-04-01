@@ -18,6 +18,10 @@ class Core_Block_Template
     {
         include_once(Mage::getBasedirectory() . 'App/design/frontend/template/' . $this->_template);
     }
+    public function toHtmlTag()
+    {
+        include(Mage::getBasedirectory() . 'App/design/frontend/template/' . $this->_template);
+    }
     public function addChild($key, $block)
     {
         $this->_child[$key] = $block;
@@ -65,5 +69,14 @@ class Core_Block_Template
     public function getLayout()
     {
         return Mage::getBlockSingleton('core/layout');
+    }
+    public function getrequest()
+    {
+        $model = Mage::getModel('core/request');
+        return $model;
+    }
+    public function getMessage()
+    {
+        return Mage::getSingleton('core/messages');
     }
 }

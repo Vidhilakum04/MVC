@@ -2,6 +2,7 @@
 $categories = $this->getCategories();
 $attributes = $this->getAttributes();
 $data = $this->getProduct();
+// echo $data->getProductId();
 ?>
 
 <div class="container mt-4">
@@ -44,10 +45,10 @@ $data = $this->getProduct();
             <select class="form-select" name="catalog_product[category_id]" id="category_id" required>
                 <option value="">Select a Category</option>
                 <?php foreach ($categories as $category): ?>
-                <option value="<?php echo $category->getCategoryId(); ?>"
-                    <?php echo ($category->getCategoryId() == $data->getCategoryId()) ? 'selected' : ''; ?>>
-                    <?php echo $category->getName(); ?>
-                </option>
+                    <option value="<?php echo $category->getCategoryId(); ?>"
+                        <?php echo ($category->getCategoryId() == $data->getCategoryId()) ? 'selected' : ''; ?>>
+                        <?php echo $category->getName(); ?>
+                    </option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -55,13 +56,13 @@ $data = $this->getProduct();
         <!-- Dynamic Attributes -->
         <?php foreach ($attributes as $attr):
             $attrName = $attr->getName(); ?>
-        <div class="mb-3">
-            <label for="id<?php echo $attr->getAttributeId(); ?>"
-                class="form-label"><?php echo $attr->getName(); ?></label>
-            <input type="<?php echo $attr->getType(); ?>" class="form-control"
-                id="id<?php echo $attr->getAttributeId(); ?>" name="catalog_product[<?php echo $attr->getName(); ?>]"
-                value="<?php echo $data->$attrName; ?>">
-        </div>
+            <div class="mb-3">
+                <label for="id<?php echo $attr->getAttributeId(); ?>"
+                    class="form-label"><?php echo $attr->getName(); ?></label>
+                <input type="<?php echo $attr->getType(); ?>" class="form-control"
+                    id="id<?php echo $attr->getAttributeId(); ?>" name="catalog_product[<?php echo $attr->getName(); ?>]"
+                    value="<?php echo $data->$attrName; ?>">
+            </div>
         <?php endforeach; ?>
 
         <!-- Image Upload -->
@@ -82,21 +83,21 @@ $data = $this->getProduct();
                 </thead>
                 <tbody>
                     <?php if (!empty($data->getData()) && !empty($data->getFilePath())): ?>
-                    <?php foreach ($data->getFilePath() as $index => $img): ?>
-                    <tr>
-                        <td>
-                            <!-- Radio Button for Single Selection -->
-                            <input type="radio" name="catalog_product[thumbnail]" value="<?php echo $img; ?>">
+                        <?php foreach ($data->getFilePath() as $index => $img): ?>
+                            <tr>
+                                <td>
+                                    <!-- Radio Button for Single Selection -->
+                                    <input type="radio" name="catalog_product[thumbnail]" value="<?php echo $img; ?>">
 
-                            <!-- Checkbox for Multiple Selection -->
-                            <input type="checkbox" name="catalog_product[delete_img][]" value="<?php echo $img; ?>">
-                        </td>
-                        <td>
-                            <img src="<?php echo $this->getUrl() . $img; ?>" alt="Image" width="80">
-                        </td>
+                                    <!-- Checkbox for Multiple Selection -->
+                                    <input type="checkbox" name="catalog_product[delete_img][]" value="<?php echo $img; ?>">
+                                </td>
+                                <td>
+                                    <img src="<?php echo $this->getUrl() . $img; ?>" alt="Image" width="80">
+                                </td>
 
-                    </tr>
-                    <?php endforeach; ?>
+                            </tr>
+                        <?php endforeach; ?>
 
                     <?php endif; ?>
                 </tbody>

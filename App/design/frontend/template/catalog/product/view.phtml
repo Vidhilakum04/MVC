@@ -22,10 +22,10 @@ if (!is_array($imagePaths)) {
             <!-- Thumbnail Grid -->
             <div class="row mt-3">
                 <?php foreach ($imagePaths as $imagePath): ?>
-                    <div class="col-3">
-                        <img src="<?php echo Mage::getBaseUrl() . $imagePath; ?>" class="img-thumbnail thumbnail-img"
-                            data-image="<?php echo Mage::getBaseUrl() . $imagePath; ?>" style="cursor: pointer;">
-                    </div>
+                <div class="col-3">
+                    <img src="<?php echo Mage::getBaseUrl() . $imagePath; ?>" class="img-thumbnail thumbnail-img"
+                        data-image="<?php echo Mage::getBaseUrl() . $imagePath; ?>" style="cursor: pointer;">
+                </div>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -50,12 +50,12 @@ if (!is_array($imagePaths)) {
             </p>
 
             <?php foreach ($attributes as $attr): ?>
-                <p><strong><?php echo $attr->getName(); ?>:</strong>
-                    <?php
+            <p><strong><?php echo $attr->getName(); ?>:</strong>
+                <?php
                     $attrName = $attr->getName();
                     echo $data->$attrName;
                     ?>
-                </p>
+            </p>
             <?php endforeach; ?>
             <form action="<?php echo $this->getUrl("checkout/cart/addproduct") ?>" method="post">
                 <input type="hidden" name="cart[product_id]" value="<?php echo $data->getProductId(); ?>">
@@ -71,48 +71,48 @@ if (!is_array($imagePaths)) {
 
 <!-- JavaScript to Update Main Image -->
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let thumbnails = document.querySelectorAll('.thumbnail-img');
-        let mainImage = document.getElementById('mainImage');
+document.addEventListener("DOMContentLoaded", function() {
+    let thumbnails = document.querySelectorAll('.thumbnail-img');
+    let mainImage = document.getElementById('mainImage');
 
-        thumbnails.forEach(thumbnail => {
-            thumbnail.addEventListener('click', function() {
-                let newImage = this.getAttribute('data-image');
-                mainImage.src = newImage;
-            });
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+            let newImage = this.getAttribute('data-image');
+            mainImage.src = newImage;
         });
     });
+});
 </script>
 
 <!-- CSS for Styling -->
 <style>
-    .main-image-container {
-        width: 100%;
-        height: 500px;
-        /* Adjust for larger images */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border: 1px solid #ddd;
-        padding: 10px;
-        background: #f8f8f8;
-    }
+.main-image-container {
+    width: 100%;
+    height: 500px;
+    /* Adjust for larger images */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background: #f8f8f8;
+}
 
-    .main-image {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-    }
+.main-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
 
-    .thumbnail-img {
-        width: 100%;
-        height: 80px;
-        object-fit: cover;
-        border: 2px solid transparent;
-        transition: border 0.2s;
-    }
+.thumbnail-img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border: 2px solid transparent;
+    transition: border 0.2s;
+}
 
-    .thumbnail-img:hover {
-        border: 2px solid #007bff;
-    }
+.thumbnail-img:hover {
+    border: 2px solid #007bff;
+}
 </style>

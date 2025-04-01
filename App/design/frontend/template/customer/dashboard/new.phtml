@@ -1,0 +1,60 @@
+<?php
+$address = $this->customerAddress();
+$customerId = $this->customerId();
+
+?>
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+
+        </div>
+        <div class="modal-body">
+            <form method="POST" action="<?php echo $this->getUrl("customer/address/save"); ?>">
+
+
+                <input type="hidden" name="customer[customer_id]" value="<?php echo $customerId; ?>" required>
+                <input type="hidden" name="customer[address_id]" value="<?php echo $address->getAddressId() ?>">
+
+                <div class="mb-3">
+                    <label class="form-label">Street</label>
+                    <input type="text" name="customer[street]" class="form-control"
+                        value="<?php echo $address->getStreet(); ?>" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">City</label>
+                    <input type="text" name="customer[city]" class="form-control"
+                        value="<?php echo $address->getCity(); ?>" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">State</label>
+                    <input type="text" name="customer[state]" class="form-control"
+                        value="<?php echo $address->getState(); ?>" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Zip Code</label>
+                    <input type="text" name="customer[zip_code]" class="form-control"
+                        value="<?php echo $address->getZipCode(); ?>" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Country</ label>
+                        <input type="text" name="customer[country]" class="form-control"
+                            value="<?php echo $address->getCountry(); ?>" required>
+                </div>
+
+
+                <div>
+                    <button type="submit"> update</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+</div>

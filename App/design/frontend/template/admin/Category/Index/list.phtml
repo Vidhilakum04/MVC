@@ -1,6 +1,115 @@
 <?php
 $category = $this->listData();
+$toolbar = $this->getChild('toolbar'); // Get the toolbar block
+$totalRecords = $toolbar->getTotalRecords();
+$limit = $toolbar->getLimit();
+$currentPage = $toolbar->getPage();
+$totalPages = ceil($totalRecords / $limit);
 ?>
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .pagination-list {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .pagination-list li {
+        margin: 0 5px;
+    }
+
+    .page-link {
+        text-decoration: none;
+        padding: 8px 12px;
+        border: 1px solid #007bff;
+        color: #007bff;
+        border-radius: 5px;
+        transition: 0.3s;
+    }
+
+    .page-link:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .active .page-link {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    .limit-selector {
+        margin-left: 20px;
+    }
+
+    .limit-selector select {
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+</style>
+<div class="pagination">
+    <p>
+        Showing <?php echo ($currentPage - 1) * $limit + 1; ?> to
+        <?php echo min($currentPage * $limit, $totalRecords); ?> of
+        <?php echo $totalRecords; ?> entries
+    </p>
+
+    <ul class="pagination-list">
+        <!-- Previous Button (Disabled if on first page) -->
+        <?php if ($currentPage > 1): ?>
+            <li>
+                <a href="<?php echo $this->getUrl('admin/category_index/list') . "/?page=" . $currentPage - 1 . "&limit=" . $limit; ?>"
+                    class="page-link">
+                    Previous
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <!-- Page Numbers -->
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <li class="<?php echo ($i == $currentPage) ? 'active' : ''; ?>">
+                <a href="<?php echo $this->getUrl('admin/category_index/list') . "/?page=" . $i . "&limit=" . $limit ?>"
+                    class="page-link"><?php echo $i; ?></a>
+            </li>
+        <?php endfor; ?>
+        <!-- Next Button (Disabled if last page) -->
+        <?php if ($currentPage < $totalPages): ?>
+            <li>
+                <a href="<?php echo $this->getUrl('admin/category_index/list') . "/?page=" . $currentPage + 1 . "&limit=" . $limit; ?>"
+                    class="page-link">
+                    Next
+                </a>
+            </li>
+        <?php endif; ?>
+    </ul>
+    <!-- Dropdown to select number of items per page -->
+    <div class="limit-selector">
+        <form action="<?php echo $this->getUrl('admin/category_index/list') . "/"; ?>" method="GET">
+            <label>Show
+                <select name="limit" onchange="this.form.submit()">
+                    <?php foreach ([5, 8, 10, 50] as $limitOption): ?>
+                        <option value="<?php echo $limitOption; ?>"
+                            <?php echo ($limitOption == $limit) ? 'selected' : ''; ?>>
+                            <?php echo $limitOption; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                entries
+            </label>
+            <input type="hidden" name="page" value="1">
+        </form>
+    </div>
+</div>
+</div>
 
 <div class="container py-5">
     <h4 class="mb-4 fw-bold text-dark">Category List</h4>
@@ -16,6 +125,7 @@ $category = $this->listData();
                 <th>Actions</th>
             </tr>
         </thead>
+
         <tbody>
             <?php foreach ($category as $cate): ?>
                 <tr>
@@ -34,6 +144,12 @@ $category = $this->listData();
                     </td>
                 </tr>
             <?php endforeach; ?>
+            <a href="add" class="btn btn-sm btn-warning">Add
+                Category</a>
         </tbody>
     </table>
+    <form action="<?php echo $this->getUrl('admin/category_index/export'); ?>" method="post">
+        <input type="hidden" name="format" value="csv">
+        <button type="submit">Download CSV</button>
+    </form>
 </div>

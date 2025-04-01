@@ -1,10 +1,7 @@
 <?php
 class Catalog_Model_Product extends Core_Model_Abstract
 {
-    // public $status = [
-    //     '0' => 'disable',
-    //     '1' => 'enable'
-    // ];
+
     public function init()
     {
         $this->_resourceClassName = "Catalog_Model_Resource_Product";
@@ -34,7 +31,6 @@ class Catalog_Model_Product extends Core_Model_Abstract
             $media = Mage::getModel('catalog/media_gallery')
                 ->getCollection()
                 ->addFieldToFilter("product_id", $this->getProductId());
-
 
             $filepath = [];
             foreach ($media->getData() as $filemedia) {
@@ -112,6 +108,7 @@ class Catalog_Model_Product extends Core_Model_Abstract
                     }
                     $imageData['thumbnail'] = $thumbnail;
                     $images->setData($imageData);
+
                     $images->save();
                 }
             }

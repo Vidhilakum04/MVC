@@ -13,8 +13,6 @@ class Sales_Model_order extends Core_Model_Abstract
             ->getCollection()
             ->addFieldToFilter("order_id", $this->getOrderId());
         return $item->getData();
-        // mage::log($item);
-        // die;
     }
 
     public function getAddressCollection()

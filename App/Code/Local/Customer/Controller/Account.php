@@ -1,9 +1,11 @@
 <?php
-class Customer_Controller_Account extends Core_Controller_Front_Action
+class Customer_Controller_Account extends Core_Controller_Customer_Action
 {
     protected $_allowedActions = [
         'login',
-        'loginPost'
+        'loginPost',
+        'registration',
+        'registerpost'
     ];
     public function loginAction()
     {
@@ -15,32 +17,34 @@ class Customer_Controller_Account extends Core_Controller_Front_Action
     }
     public function loginPostAction()
     {
-        $session = Mage::getSingleton('core/session');
-        $params = $this->getRequest()->getParams();
-        mage::log($params);
-        $admin = Mage::getModel('customer/account')
-            ->setData($params);
-        // ->getCollection()
-        // ->addFieldToFilter('email', $this->getCustomerId());
+        $loginData = $this->getRequest()->getParam('login');
+        $email = $loginData['email'];
 
-        // ->setEmail('email', $params->getEmail());
-        mage::log($admin);
+        $password = $loginData['password'];
+        $user = Mage::getModel('customer/account')
+            ->getCollection()
+            ->addFieldToFilter('email', $email)
+            ->addFieldToFilter('password', $password);
+        $result = $user->getFirstItem();
 
-        if ($params['email'] == $admin->getEmail() && $params['password'] == $admin->getPassword()) {
-            $session->set('login', 1);
-            // $this->redirect('');
+        if ($result->getData()) {
+            $this->getSession()->set('login', 1);
+            $this->getSession()->set('customerId', $result->getCustomerId());
+
+            $this->redirect(' ');
         } else {
-            $session->remove('login');
+            $this->getSession()->remove('login');
+
             $this->redirect('customer/account/login');
         }
     }
     public function logoutAction()
     {
-        $session = Mage::getSingleton('core/session');
-        if ($session->get('login')) {
-            $session->remove('login');
+        if ($this->getSession()->get('login')) {
+            $this->getSession()->remove('login');
+            $this->getSession()->remove('customerId');
+            // $this->redirect('');
         }
-        $this->redirect('');
     }
     public function registrationAction()
     {
@@ -53,19 +57,29 @@ class Customer_Controller_Account extends Core_Controller_Front_Action
     }
     public function registerPostAction()
     {
-        $session = Mage::getSingleton('core/session');
-        $params = $this->getRequest()->getParams();
 
-        $admin = Mage::getModel('customer/account')
-            ->setData($params);
+        $customer = $this->getRequest()->getParam('customer');
+        $address = $this->getRequest()->getParam('address');
 
+        $account = Mage::getModel("customer/account");
+        $email = $account->load($customer['email'], 'email');
+        if (!$email->getData()) {
+            $new = $account->setData($customer)
+                ->save();
+            $address = Mage::getModel("customer/account_address")
+                ->setData($address)
+                ->setCustomerId($new->getCustomerId())
+                ->setDefaultAddress(1)
 
-        if ($params['email'] == $admin->getEmail() && $params['password'] == $admin->getPassword() && $params['password'] == $params['confirm_password']) {
-            $session->set('registration', 1);
-            // $this->redirect('');
+                ->save();
+
+            $this->getSession()->set('login', 1);
+
+            $this->getSession()->set('customer_id', $new->getCustomerId());
+
+            $this->redirect("customer/dashboard/index");
         } else {
-            $session->remove('registration');
-            $this->redirect('customer/account/login');
+            echo "email already exits";
         }
     }
 }

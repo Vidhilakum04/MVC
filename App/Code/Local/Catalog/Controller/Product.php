@@ -22,14 +22,4 @@ class Catalog_Controller_Product
 
         $layout->toHtml();
     }
-    public function TestAction()
-    {
-
-        // $checkout = Mage::getModel('checkout/session')
-        //     ->getCart()
-        //     ->getItemCollection();
-        // $checkout->select(['sum(main_table.sub_total)' => 'subTotal']);
-
-        // Mage::log($checkout->prepareQuery('item_id'));
-    }
 }

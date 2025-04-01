@@ -27,26 +27,25 @@
                 "validate-number": this.validateNumber,
                 "validate-required": this.validateRequired
             };
-    console.log("this is js");
             this.observeInputs();
             this.setupFormSubmission();
         }
     
-        // Email Validation
         validateEmail(input) {
+            console.log(`Validating Email: ${input.value}`);
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return emailPattern.test(input.value) ? "" : "Invalid email format";
-        }
-    
-        // Number Validation
+        }        
+
         validateNumber(input) {
+            console.log(`Validating Number: ${input.name || input.id} → '${input.value}'`);
             return /^\d+$/.test(input.value) ? "" : "Only numbers allowed";
-        }
+        }        
     
         // Required Field Validation
         validateRequired(input) {
             return input.value.trim() ? "" : "This field is required";
-        }
+       }
     
         // Validate a single input
         validateInput(input) {
@@ -111,24 +110,47 @@
         }
     
         // Prevent form submission if validation fails
+        // setupFormSubmission() {
+        //     this.form.addEventListener("submit", (event) => {
+        //         let isValid = true;
+        //         const allInputs = this.form.querySelectorAll("input");
+    
+        //         allInputs.forEach((input) => {
+        //             this.validateInput(input);
+        //             if (input.nextElementSibling && input.nextElementSibling.textContent !== "") {
+        //                 console.warn("Validation Error on:", input.name || input.id, input.value);
+        //             }
+        //         });
+    
+        //         if (!isValid) {
+        //             event.preventDefault(); // Block form submission
+        //             alert("Please fix validation errors before submitting.");
+        //         }
+        //     });
+        // }
         setupFormSubmission() {
             this.form.addEventListener("submit", (event) => {
                 let isValid = true;
                 const allInputs = this.form.querySelectorAll("input");
-    
+        
                 allInputs.forEach((input) => {
-                    this.validateInput(input);
+                    this.validateInput(input); // Validate the field
                     if (input.nextElementSibling && input.nextElementSibling.textContent !== "") {
                         isValid = false;
+                        console.warn(`❌ Validation Error in: ${input.name || input.id} → ${input.nextElementSibling.textContent}`);
                     }
                 });
-    
+        
                 if (!isValid) {
-                    event.preventDefault(); // Block form submission
+                    event.preventDefault(); // Stop submission
                     alert("Please fix validation errors before submitting.");
+                } else {
+                    console.log("✅ Form is valid! Submitting...");
                 }
             });
         }
+        
+        
     }
     
     //  Apply validation to **all** forms automatically
@@ -138,3 +160,6 @@
         });
     });
     
+
+///////////////////////////////////////////////
+

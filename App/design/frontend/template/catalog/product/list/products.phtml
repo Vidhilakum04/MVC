@@ -1,7 +1,67 @@
 <?php
-$products = $this->getImages();
-// $attributes = $this->getAttributes();
+$products = $this->listData();
 ?>
+<?php
+$toolbar = $this->getChild('toolbar');
+// Get the toolbar block
+$totalRecords = $toolbar->getTotalRecords();
+$limit = $toolbar->getLimit();
+$currentPage = $toolbar->getPage();
+$totalPages = ceil($totalRecords / $limit);
+?>
+<div class="pagination">
+    <p>
+        Showing <?php echo ($currentPage - 1) * $limit + 1; ?> to
+        <?php echo min($currentPage * $limit, $totalRecords); ?> of
+        <?php echo $totalRecords; ?> entries
+    </p>
+
+    <ul class="pagination-list">
+        <!-- Previous Button (Disabled if on first page) -->
+        <?php if ($currentPage > 1): ?>
+            <li>
+                <a href="<?php echo $this->getUrl('catalog/product/list/products') . "/?page=" . $currentPage - 1 . "&limit=" . $limit; ?>"
+                    class="page-link">
+                    Previous
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <!-- Page Numbers -->
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <li class="<?php echo ($i == $currentPage) ? 'active' : ''; ?>">
+                <a href="<?php echo $this->getUrl('catalog/product/list/products') . "/?page=" . $i . "&limit=" . $limit ?>"
+                    class="page-link"><?php echo $i; ?></a>
+            </li>
+        <?php endfor; ?>
+        <!-- Next Button (Disabled if last page) -->
+        <?php if ($currentPage < $totalPages): ?>
+            <li>
+                <a href="<?php echo $this->getUrl('catalog/product/list/products') . "/?page=" . $currentPage + 1 . "&limit=" . $limit; ?>"
+                    class="page-link">
+                    Next
+                </a>
+            </li>
+        <?php endif; ?>
+    </ul>
+    <!-- Dropdown to select number of items per page -->
+    <div class="limit-selector">
+        <form action="<?php echo $this->getUrl('catalog/product/list/products') . "/"; ?>" method="GET">
+            <label>Show
+                <select name="limit" onchange="this.form.submit()">
+                    <?php foreach ([5, 8, 10, 50] as $limitOption): ?>
+                        <option value="<?php echo $limitOption; ?>"
+                            <?php echo ($limitOption == $limit) ? 'selected' : ''; ?>>
+                            <?php echo $limitOption; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                entries
+            </label>
+            <input type="hidden" name="page" value="1">
+        </form>
+    </div>
+</div>
 
 <!-- Product List (Right Side, 9 columns) -->
 <div class="col-md-9">

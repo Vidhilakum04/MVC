@@ -1,0 +1,152 @@
+<?php
+$address = $this->dashboardAddress();
+$default = $this->getDefaultAddress();
+
+?>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <img src="/api/placeholder/80/80" alt="Profile Picture" class="rounded-circle img-thumbnail">
+                    </div>
+                    <h5 class="card-title fw-bold"></h5>
+                    <p class="card-text text-muted">Customer since 2023</p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary">Edit Profile</button>
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="#" class="text-decoration-none d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-user me-2"></i> Profile</span>
+                            <i class="fas fa-chevron-right small"></i>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="#" class="text-decoration-none d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-box me-2"></i> Orders</span>
+                            <span class="badge bg-primary rounded-pill">4</span>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="#" class="text-decoration-none d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-map-marker-alt me-2"></i> Addresses</span>
+                            <i class="fas fa-chevron-right small"></i>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="#" class="text-decoration-none d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-heart me-2"></i> Wishlist</span>
+                            <span class="badge bg-primary rounded-pill">5</span>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="#" class="text-decoration-none d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-credit-card me-2"></i> Payment Methods</span>
+                            <i class="fas fa-chevron-right small"></i>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="#" class="text-decoration-none d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-cog me-2"></i> Settings</span>
+                            <i class="fas fa-chevron-right small"></i>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="#"
+                            class="text-decoration-none text-danger d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-sign-out-alt me-2"></i> Logout</span>
+                            <i class="fas fa-chevron-right small"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Addresses</h5>
+                <button class="btn btn-sm btn-outline-primary">Add New</button>
+                <a href="<?php echo $this->getUrl('customer/address/new') ?>" class="add-item">add</a>
+                <input type="hidden" name="customer_id" value="<?php //echo $customerId; 
+                                                                ?>" required>
+                <input type="hidden" name="address_id" value="<?php //echo $customer->getAddressId()
+                                                                ?>">
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Default Address -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="card-title">Default Address</h6>
+                                    <span class="badge bg-primary">Default</span>
+                                </div>
+                                <?php foreach ($default as $defaultaddress):
+                                ?>
+                                    <p class="card-text">
+                                        <?php echo $defaultaddress->getStreet(); ?><br>
+                                        <?php echo $defaultaddress->getCity(); ?><br>
+                                        <?php echo $defaultaddress->getState(); ?><br>
+                                        <?php echo $defaultaddress->getZipCode(); ?><br>
+                                        <?php echo $defaultaddress->getCountry(); ?><br>
+                                        <?php echo $defaultaddress->getCreatedAt(); ?>
+                                    </p>
+
+
+                                    <div class="d-flex gap-2 mt-3">
+                                        <a href="<?php echo $this->getUrl('customer/address/new') . '/?address_id=' . $defaultaddress->getAddressId();
+                                                    ?>" class="delete-item">edit</a>
+
+                                        <a href="<?php echo $this->getUrl('customer/address/delete') . '/?address_id=' . $defaultaddress->getAddressId();
+                                                    ?>" class="delete-item">delete</a>
+                                        <a href="#" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    <?php endforeach;
+                                    ?>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Second Address -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="card-title">Work Address</h6>
+                                </div>
+                                <?php foreach ($address as $addressdata):
+                                ?>
+
+                                    <p class="card-text">
+                                        <?php echo $addressdata->getStreet(); ?><br>
+                                        <?php echo $addressdata->getCity(); ?><br>
+                                        <?php echo $addressdata->getState(); ?><br>
+                                        <?php echo $addressdata->getZipCode(); ?><br>
+                                        <?php echo $addressdata->getCountry(); ?><br>
+                                        <?php echo $addressdata->getCreatedAt(); ?>
+                                    </p>
+                                    <div class="d-flex gap-2 mt-3">
+                                        <a href="<?php echo $this->getUrl('customer/address/new') . '/?address_id=' . $addressdata->getAddressId(); ?>"
+                                            class="delete-item">edit</a>
+                                        <a href="<?php echo $this->getUrl('customer/address/delete') . '/?address_id=' . $addressdata->getAddressId();
+                                                    ?>" class="delete-item">delete</a>
+                                    <?php endforeach; ?>
+                                    <a href="#" class="btn btn-sm btn-outline-secondary">Set as Default</a>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js">
+        </script>
+        </body>
+
+        </html>

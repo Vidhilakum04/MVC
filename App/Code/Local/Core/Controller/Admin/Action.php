@@ -1,20 +1,52 @@
 <?php
-
 class Core_Controller_Admin_Action extends Core_Controller_Front_Action
 {
-    protected $_allowedActions = [];
-    public function __construct() // called wehn object of this class is created
+    protected $_allowed = [
+        'login'
+    ];
+    protected $_roleallowed = [];
+    public function __construct()
     {
-        $this->_init(); // which contains authentication checks 
+        $this->init();
     }
-    protected function _init()
+    public function getRolePermissions()
     {
-        $isLogin = $this->getSession()->get('login'); // return session instance (core/session) and fetches the value of the login key from the session.
-        if (!in_array($this->getRequest()->getActionName(), $this->_allowedActions)) { //If the action is in the list, it is considered a publicly accessible admin action (e.g., login page, password reset).and If not in the list, authentication is required.
-            if ($isLogin == 1) { //If the session login variable is set to 1, the user is considered logged in, and access is granted
+        $user = Mage::getSingleton('admin/user')
+            ->load($this->getSession()->get('admin_id'));
+        $permissions = $user->getAdminPermission();
+        $this->setRole($permissions);
+
+        $link = $this->getLayout()->getChild('header')->setPermission($this->getRole());
+        // $link->getPermission();
+        mage::log($this->getLayout()->getChild('header'));
+    }
+    public function getRole()
+    {
+        return $this->_roleallowed;
+    }
+    public function setRole($_roleallowed)
+    {
+        $this->_roleallowed = json_decode($_roleallowed);
+
+        return $this;
+    }
+
+    public function init()
+    {
+        $this->getRolePermissions();
+        $roleAllow = $this->getRequest()->getControllerName() . "/" . $this->getRequest()->getActionName();
+        $islogin = $this->getSession()->get('login');
+        if (!in_array($this->getRequest()->getActionName(), $this->_allowed)) {
+            if ($islogin === 1 && in_array($roleAllow, $this->_roleallowed)) {
+
+                // $this->redir/ect('admin/product_index/list');
             } else {
-                $this->redirect('admin/account/login'); //Otherwise, the user is redirected to the admin login page
+                $this->redirect('admin/account/login'); //redirect to home cms
             }
         }
+    }
+    public function getLayout()
+    {
+        return Mage::getBlockSingleton("core/layout_admin");
     }
 }

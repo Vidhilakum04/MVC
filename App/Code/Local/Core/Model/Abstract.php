@@ -79,9 +79,9 @@ class Core_Model_Abstract
     } //Creates a collection object to retrieve multiple records
     public function save()
     {
-        $this->_afterSave();
         $this->_beforeSave();
         $this->getResource()->save($this);
+        $this->_afterSave();
 
         return $this;
     }
