@@ -1,0 +1,54 @@
+<?php
+echo $this->getChildhtml('toolbar');
+$products = $this->getcollection()->getData();
+$columns = $this->getcolumn();
+// mage::log($columns);
+$filter = $this->getcolumn();
+
+?>
+<div class="container py-5">
+    <h4 class="mb-4 fw-bold text-dark">Product List</h4>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <?php foreach ($columns as $column): ?>
+                    <th><?php echo $column->getData()['lable'];
+                        ?></th>
+                <?php endforeach; ?>
+            </tr>
+        </thead>
+        <thead>
+            <tr>
+                <?php foreach ($filter as $filters):
+                ?>
+                    <?php if (isset($filters->getData()['filter'])): ?>
+                        <th><?php echo $filters->getFilter()->render();
+                            ?></th>
+                    <?php endif; ?>
+
+                <?php endforeach;
+                ?>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <?php foreach ($products as $row): ?>
+                <tr>
+                    <?php foreach ($columns as $column): ?>
+                        <?php $column->setRow($row); ?>
+                        <td> <?php echo $column->render(); ?></td>
+                    <?php endforeach; ?>
+                </tr>
+            <?php endforeach;
+            ?>
+        </tbody>
+    </table>
+    <div class="export-buttons">
+        <h3>Export Data</h3>
+        <form action="<?php echo $this->getUrl('admin/product_index/export'); ?>" method="post">
+            <input type="hidden" name="format" value="csv">
+            <button type="submit">Download CSV</button>
+        </form>
+    </div>
+</div>

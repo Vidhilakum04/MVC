@@ -7,7 +7,8 @@ class Admin_Controller_Account extends Core_Controller_Admin_Action
     ];
     public function loginAction()
     {
-        $layout = Mage::getBlock('core/layout');
+
+        $layout = $this->getLayout();
         $login = $layout->createBlock('admin/account_login')
             ->setTemplate('admin/account/login.phtml');
         $layout->getChild('content')->addChild('login', $login);
@@ -20,6 +21,9 @@ class Admin_Controller_Account extends Core_Controller_Admin_Action
         $admin = Mage::getSingleton('admin/user')->load($params['username'], 'username');
         if ($params['username'] == $admin->getUsername() && $params['password'] == $admin->getPasswordHash()) {
             $session->set('login', 1);
+
+            $this->getSession()->set('admin_id', $admin->getAdminId()); //for role permissions
+
             $this->redirect('');
         } else {
             $session->remove('login');

@@ -1,5 +1,7 @@
 <?php
 
+
+
 class verien_Object
 {
     protected $_data = [];
@@ -11,5 +13,12 @@ class verien_Object
 
 spl_autoload_register(function ($className) {
     $classPath = str_replace("_", "/", $className);
-    require $classPath . '.php';
+    @include $classPath . '.php';
 });
+spl_autoload_register(function ($className) {
+    $classPath = str_replace("_", "/", $className);
+    echo $classPath;
+    @include getcwd() . "/lib/" .  $classPath . '.php'; //@include==not getting warning
+});
+
+@include getcwd() . '/lib/PayPal/autoloader.php';

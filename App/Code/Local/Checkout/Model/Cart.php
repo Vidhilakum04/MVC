@@ -22,6 +22,7 @@ class Checkout_Model_Cart extends Core_Model_Abstract
 
         $cartitem = $cartitem->setSubTotal($productdata[0]->getPrice() * $cartData['product_quantity']);
 
+
         $cartitem->save();
         return $this;
     }

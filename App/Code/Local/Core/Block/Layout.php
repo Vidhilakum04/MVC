@@ -19,6 +19,9 @@ class Core_Block_Layout extends Core_Block_Template
         $header = $this->createBlock('page/header');
         $this->addchild('header', $header);
 
+        $message = $this->createBlock('core/messages');
+        $this->addchild('message', $message);
+
         $footer = $this->createBlock('page/footer');
         $this->addchild('footer', $footer);
 
@@ -32,6 +35,7 @@ class Core_Block_Layout extends Core_Block_Template
     }
     public function prepareJsCss()
     {
-        $head = $this->getChild('head');
+        $_head = $this->getChild('head');
+        return $_head;
     }
 }

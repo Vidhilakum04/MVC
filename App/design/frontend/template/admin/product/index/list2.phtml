@@ -1,0 +1,165 @@
+<?php
+$products = $this->listData();
+$toolbar = $this->getChild('toolbar');
+$totalRecords = $toolbar->getTotalRecords();
+$limit = $toolbar->getLimit();
+$currentPage = $toolbar->getPage();
+$totalPages = ceil($totalRecords / $limit);
+?>
+
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .pagination-list {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .pagination-list li {
+        margin: 0 5px;
+    }
+
+    .page-link {
+        text-decoration: none;
+        padding: 8px 12px;
+        border: 1px solid #007bff;
+        color: #007bff;
+        border-radius: 5px;
+        transition: 0.3s;
+    }
+
+    .page-link:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .active .page-link {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    .limit-selector {
+        margin-left: 20px;
+    }
+
+    .limit-selector select {
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+</style>
+
+<div class="pagination">
+    <p>
+        Showing <?php echo ($currentPage - 1) * $limit + 1; ?> to
+        <?php echo min($currentPage * $limit, $totalRecords); ?> of
+        <?php echo $totalRecords; ?> entries
+    </p>
+
+    <ul class="pagination-list">
+        <!-- Previous Button -->
+        <?php if ($currentPage > 1): ?>
+            <li>
+                <a href="<?php echo $this->getUrl('admin/product_index/list2') . "/?page=" . ($currentPage - 1) . "&limit=" . $limit; ?>"
+                    class="page-link">Previous</a>
+            </li>
+        <?php endif; ?>
+
+        <!-- Page Numbers -->
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <li class="<?php echo ($i == $currentPage) ? 'active' : ''; ?>">
+                <a href="<?php echo $this->getUrl('admin/product_index/list2') . "/?page=" . $i . "&limit=" . $limit ?>"
+                    class="page-link"><?php echo $i; ?></a>
+            </li>
+        <?php endfor; ?>
+
+        <!-- Next Button -->
+        <?php if ($currentPage < $totalPages): ?>
+            <li>
+                <a href="<?php echo $this->getUrl('admin/product_index/list2') . "/?page=" . ($currentPage + 1) . "&limit=" . $limit; ?>"
+                    class="page-link">Next</a>
+            </li>
+        <?php endif; ?>
+    </ul>
+
+    <!-- Limit Selector -->
+    <div class="limit-selector">
+        <form action="<?php echo $this->getUrl('admin/product_index/list2') . "/"; ?>" method="GET">
+            <label>Show
+                <select name="limit" onchange="this.form.submit()">
+                    <?php foreach ([5, 8, 10, 50] as $limitOption): ?>
+                        <option value="<?php echo $limitOption; ?>"
+                            <?php echo ($limitOption == $limit) ? 'selected' : ''; ?>>
+                            <?php echo $limitOption; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                entries
+            </label>
+            <input type="hidden" name="page" value="1">
+        </form>
+    </div>
+</div>
+
+<!--list of products -->
+<div class="container py-5">
+    <h4 class="mb-4 fw-bold text-dark">Product List</h4>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>description</th>
+                <th>sku</th>
+                <th>Price</th>
+                <th>stock_quantity</th>
+                <th>category_id</th>
+                <th>created_at</th>
+                <th>updated_at</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <?php foreach ($products as $product): ?>
+                <tr>
+                    <td><?php echo $product->getProductId(); ?></td>
+                    <td><?php echo $product->getName(); ?></td>
+                    <td><?php echo $product->getDescription(); ?></td>
+                    <td><?php echo $product->getSku(); ?></td>
+                    <td>₹<?php echo $product->getPrice(); ?></td>
+                    <td><?php echo $product->getStockQuantity(); ?></td>
+                    <td><?php echo $product->getCategoryId(); ?></td>
+                    <td><?php echo $product->getCreatedAt(); ?></td>
+                    <td><?php echo $product->getUpdatedAt(); ?></td>
+                    <td>
+                        <a href="<?php echo $this->getUrl('admin/product_index/new') . '/?product_id=' . $product->getProductId(); ?>"
+                            class="btn  btn-primary">Edit</a>
+                        <a href="delete/?id=<?php echo $product->getProductId(); ?>" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Are you sure?')">Delete</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+
+    </table>
+    <div class="export-buttons">
+        <h3>Export Data</h3>
+        <form action="<?php echo $this->getUrl('admin/product_index/export'); ?>" method="post">
+            <input type="hidden" name="format" value="csv">
+            <button type="submit">Download CSV</button>
+        </form>
+    </div>
+</div>
+
+
+</div>

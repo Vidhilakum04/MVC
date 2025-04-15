@@ -4,7 +4,6 @@ class Admin_Block_Product_Index_New extends Core_Block_Template
     // protected $_product;
     public function getProduct()
     {
-        print_r('<pre>');
         $request = Mage::getModel('core/request');
         $productId = $request->getQuery('product_id');
         $data = Mage::getModel('catalog/product')

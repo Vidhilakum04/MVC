@@ -96,7 +96,7 @@ class Core_Model_Resource_Abstract
                 $values
             );
             $id = $this->getAdapter()->insert($sql);
-            $model->{$this->_primarykey} = $id;
+            return $model->{$this->_primarykey} = $id;
         }
     }
     public function delete($model)

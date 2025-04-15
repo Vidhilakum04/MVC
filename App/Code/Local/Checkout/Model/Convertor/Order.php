@@ -29,8 +29,6 @@ class Checkout_Model_Convertor_Order
                 ->setData($item)
                 ->save();
         }
-        // mage::log($item);
-
         $billing = $cart->getBillingAddress();
         $billingData = $billing->getData();
         $shipping = $cart->getShippingAddress();
@@ -50,10 +48,5 @@ class Checkout_Model_Convertor_Order
         $shippingAddress = Mage::getModel('sales/order_address')
             ->setData($shippingData)
             ->save();
-        // mage::log($billingAddress);
-        // mage::log($shippingAddress);
-        // mage::log($billingData);
-        // mage::log($shippingData);
-        // die;
     }
 }

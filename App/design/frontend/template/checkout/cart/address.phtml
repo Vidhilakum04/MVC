@@ -9,11 +9,11 @@ $cart = $this->cartData();
 
     <form id="checkout-form" method="POST" action="<?php echo $this->getUrl('Checkout/cart/save') ?>"
         class="p-4 shadow rounded bg-light">
-
         <!-- Email Address -->
         <div class="mb-3">
             <label class="fw-bold">Email Address</label>
-            <input type="email" id="customer_email" name="customer_email" value="<?php echo $cart->getEmail() ?>"
+            <input type="email" id="customer_email" name="customer_email"
+                value="<?php echo htmlspecialchars($cart->getEmail(), ENT_QUOTES); ?>"
                 class="form-control validate-email validate-required" required>
             <span class="text-danger error-message"></span>
         </div>
@@ -22,126 +22,101 @@ $cart = $this->cartData();
         <h4 class="fw-bold">Shipping Address</h4>
         <div id="shipping-form" class="row g-3">
             <input type="hidden" name="shipping[address_type]" value="Shipping">
-            <input type="hidden" name="shipping[address_id]" value="<?php echo $shipping->getAddressId() ?>">
+            <input type="hidden" name="shipping[address_id]"
+                value="<?php echo !empty($shipping->getAddressId()) ? $shipping->getAddressId() : ''; ?>">
 
             <div class="col-md-6">
                 <label class="fw-bold">First Name</label>
                 <input type="text" name="shipping[first_name]" id="shipping-first-name"
-                    value="<?php echo $shipping->getFirstName() ?>" class="form-control validate-required" required>
+                    value="<?php echo htmlspecialchars($shipping->getFirstName(), ENT_QUOTES); ?>"
+                    class="form-control validate-required" required>
                 <span class="text-danger error-message"></span>
             </div>
 
             <div class="col-md-6">
                 <label class="fw-bold">Last Name</label>
                 <input type="text" name="shipping[last_name]" id="shipping-last-name"
-                    value="<?php echo $shipping->getLastName() ?>" class="form-control validate-required" required>
+                    value="<?php echo htmlspecialchars($shipping->getLastName(), ENT_QUOTES); ?>"
+                    class="form-control validate-required" required>
                 <span class="text-danger error-message"></span>
             </div>
 
             <div class="col-md-6">
                 <label class="fw-bold">Phone Number</label>
-                <input type="text" name="shipping[phone_number]" id="shipping-phone"
-                    value="<?php echo $shipping->getPhoneNumber() ?>"
-                    class="form-control validate-number validate-required" required>
+                <input type="tel" name="shipping[phone_number]" id="shipping-phone"
+                    value="<?php echo htmlspecialchars($shipping->getPhoneNumber(), ENT_QUOTES); ?>"
+                    class="form-control validate-required" pattern="[0-9+ ]{10,15}" required>
                 <span class="text-danger error-message"></span>
             </div>
 
             <div class="col-md-12">
                 <label class="fw-bold">Street Address</label>
                 <input type="text" name="shipping[street_address]" id="shipping-address"
-                    value="<?php echo $shipping->getStreetAddress() ?>" class="form-control validate-required" required>
+                    value="<?php echo htmlspecialchars($shipping->getStreetAddress(), ENT_QUOTES); ?>"
+                    class="form-control validate-required" required>
                 <span class="text-danger error-message"></span>
             </div>
 
             <div class="col-md-4">
                 <label class="fw-bold">City</label>
-                <input type="text" name="shipping[city]" id="shipping-city" value="<?php echo $shipping->getCity() ?>"
+                <input type="text" name="shipping[city]" id="shipping-city"
+                    value="<?php echo htmlspecialchars($shipping->getCity(), ENT_QUOTES); ?>"
                     class="form-control validate-required" required>
                 <span class="text-danger error-message"></span>
             </div>
 
             <div class="col-md-4">
                 <label class="fw-bold">Zip Code</label>
-                <input type="text" name="shipping[zipcode]" id="shipping-zipcode"
-                    value="<?php echo $shipping->getZipcode() ?>" class="form-control validate-number validate-required"
-                    required>
+                <input type="number" name="shipping[zipcode]" id="shipping-zipcode"
+                    value="<?php echo htmlspecialchars($shipping->getZipcode(), ENT_QUOTES); ?>"
+                    class="form-control validate-required" required>
                 <span class="text-danger error-message"></span>
             </div>
 
             <div class="col-md-4">
-                <label class="fw-bold">Region</label>
+                <label class="fw-bold">State</label>
                 <input type="text" name="shipping[region]" id="shipping-region"
-                    value="<?php echo $shipping->getRegion() ?>" class="form-control validate-required" required>
-                <span class="text-danger error-message"></span>
-            </div>
-
-            <div class="col-md-6">
-                <label class="fw-bold">Country</label>
-                <input type="text" name="shipping[country]" id="shipping-country"
-                    value="<?php echo $shipping->getCountry() ?>" class="form-control validate-required" required>
+                    value="<?php echo htmlspecialchars($shipping->getRegion(), ENT_QUOTES); ?>"
+                    class="form-control validate-required" required>
                 <span class="text-danger error-message"></span>
             </div>
         </div>
+
         <h4 class="fw-bold">Billing Address</h4>
         <div id="billing-form" class="row g-3">
-            <input type="hidden" name="billing[address_type]" value="billing">
-            <input type="hidden" name="billing[address_id]" value="<?php echo $billing->getAddressId() ?>">
+            <input type="hidden" name="billing[address_type]" value="Billing">
+            <input type="hidden" name="billing[address_id]"
+                value="<?php echo !empty($billing->getAddressId()) ? $billing->getAddressId() : ''; ?>">
 
             <div class="col-md-6">
                 <label class="fw-bold">First Name</label>
                 <input type="text" name="billing[first_name]" id="billing-first-name"
-                    value="<?php echo $billing->getFirstName() ?>" class="form-control validate-required" required>
+                    value="<?php echo htmlspecialchars($billing->getFirstName(), ENT_QUOTES); ?>"
+                    class="form-control validate-required" required>
                 <span class="text-danger error-message"></span>
             </div>
 
             <div class="col-md-6">
                 <label class="fw-bold">Last Name</label>
                 <input type="text" name="billing[last_name]" id="billing-last-name"
-                    value="<?php echo $billing->getLastName() ?>" class="form-control validate-required" required>
+                    value="<?php echo htmlspecialchars($billing->getLastName(), ENT_QUOTES); ?>"
+                    class="form-control validate-required" required>
                 <span class="text-danger error-message"></span>
             </div>
 
             <div class="col-md-6">
                 <label class="fw-bold">Phone Number</label>
-                <input type="text" name="billing[phone_number]" id="billing-phone"
-                    value="<?php echo $billing->getPhoneNumber() ?>"
-                    class="form-control validate-number validate-required" required>
+                <input type="tel" name="billing[phone_number]" id="billing-phone"
+                    value="<?php echo htmlspecialchars($billing->getPhoneNumber(), ENT_QUOTES); ?>"
+                    class="form-control validate-required" pattern="[0-9+ ]{10,15}" required>
                 <span class="text-danger error-message"></span>
             </div>
 
             <div class="col-md-12">
                 <label class="fw-bold">Street Address</label>
                 <input type="text" name="billing[street_address]" id="billing-address"
-                    value="<?php echo $billing->getStreetAddress() ?>" class="form-control validate-required" required>
-                <span class="text-danger error-message"></span>
-            </div>
-
-            <div class="col-md-4">
-                <label class="fw-bold">City</label>
-                <input type="text" name="billing[city]" id="billing-city" value="<?php echo $billing->getCity() ?>"
+                    value="<?php echo htmlspecialchars($billing->getStreetAddress(), ENT_QUOTES); ?>"
                     class="form-control validate-required" required>
-                <span class="text-danger error-message"></span>
-            </div>
-
-            <div class="col-md-4">
-                <label class="fw-bold">Zip Code</label>
-                <input type="text" name="billing[zipcode]" id="billing-zipcode"
-                    value="<?php echo $billing->getZipcode() ?>" class="form-control validate-number validate-required"
-                    required>
-                <span class="text-danger error-message"></span>
-            </div>
-
-            <div class="col-md-4">
-                <label class="fw-bold">Region</label>
-                <input type="text" name="billing[region]" id="billing-region"
-                    value="<?php echo $billing->getRegion() ?>" class="form-control validate-required" required>
-                <span class="text-danger error-message"></span>
-            </div>
-
-            <div class="col-md-6">
-                <label class="fw-bold">Country</label>
-                <input type="text" name="billing[country]" id="billing-country"
-                    value="<?php echo $billing->getCountry() ?>" class="form-control validate-required" required>
                 <span class="text-danger error-message"></span>
             </div>
         </div>
@@ -152,12 +127,3 @@ $cart = $this->cartData();
         </div>
     </form>
 </div>
-
-
-<script>
-    // document.addEventListener("DOMContentLoaded", () => {
-    //     document.querySelectorAll("form").forEach((form) => {
-    //         new FormValidator(form);
-    //     });
-    // });
-</script>

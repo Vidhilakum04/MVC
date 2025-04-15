@@ -1,26 +1,131 @@
-<!-- Footer Section -->
-<footer class="bg-light text-center py-3 mt-5 border-top">
-    <div class="container d-flex justify-content-between align-items-center">
-        <!-- Social Icons -->
-        <div>
-            <a href="#" class="text-dark me-3"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="text-dark me-3"><i class="fab fa-x-twitter"></i></a>
-            <a href="#" class="text-dark me-3"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="text-dark"><i class="fab fa-youtube"></i></a>
+<footer class="footer bg-dark text-white py-5">
+    <div class="container">
+        <div class="row text-center text-md-start">
+            <!-- Shop Info -->
+            <div class="col-md-3 mb-4">
+                <h5 class="fw-bold">ShopName</h5>
+                <p class="text-muted">Your one-stop shop for all your needs.</p>
+                <div class="d-flex gap-3 justify-content-center justify-content-md-start">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-md-3 mb-4">
+                <h5 class="fw-bold">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="footer-link">Home</a></li>
+                    <li><a href="#" class="footer-link">Shop</a></li>
+                    <li><a href="#" class="footer-link">Categories</a></li>
+                    <li><a href="#" class="footer-link">About Us</a></li>
+                    <li><a href="#" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- Customer Service -->
+            <div class="col-md-3 mb-4">
+                <h5 class="fw-bold">Customer Service</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="footer-link">My Account</a></li>
+                    <li><a href="#" class="footer-link">Orders</a></li>
+                    <li><a href="#" class="footer-link">Shipping</a></li>
+                    <li><a href="#" class="footer-link">Returns</a></li>
+                    <li><a href="#" class="footer-link">FAQ</a></li>
+                </ul>
+            </div>
+
+            <!-- Newsletter -->
+            <div class="col-md-3 mb-4">
+                <h5 class="fw-bold">Newsletter</h5>
+                <p class="text-muted">Subscribe to receive updates and exclusive offers.</p>
+                <form>
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Enter email">
+                        <button class="btn btn-primary">Subscribe</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <!-- Copyright Text -->
-        <p class="mb-0 text-muted">
-            &copy; 2025 Mywebsite. All Rights Reserved.
-            <a href="#" class="text-primary">Privacy Policy</a> |
-            <a href="#" class="text-primary">Terms of Use</a>
-        </p>
-
+        <!-- Bottom Section -->
+        <hr class="border-secondary">
+        <div class="row text-center text-md-start">
+            <div class="col-md-6">
+                <p class="mb-0 text-muted">&copy; 2025 ShopName. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <p class="mb-0 text-muted">
+                    <a href="#" class="footer-link">Privacy Policy</a> |
+                    <a href="#" class="footer-link">Terms of Service</a>
+                </p>
+            </div>
+        </div>
     </div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="btn btn-light rounded-circle shadow-sm">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 </footer>
 
+<!-- Footer Styles -->
+<style>
+    /* General Styling */
+    .footer {
+        position: relative;
+    }
 
-<!-- Back to Top Button -->
-<button id="back-to-top" class="back-to-top">
-    <i class="fas fa-chevron-up"></i>
-</button>
+    .footer-link {
+        color: #bbb;
+        text-decoration: none;
+        transition: color 0.3s ease-in-out;
+    }
+
+    .footer-link:hover {
+        color: #fff;
+    }
+
+    /* Social Icons */
+    .social-icon {
+        color: #bbb;
+        font-size: 1.2rem;
+        transition: color 0.3s ease-in-out;
+    }
+
+    .social-icon:hover {
+        color: #fff;
+    }
+
+    /* Back to Top Button */
+    #backToTop {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: none;
+        width: 40px;
+        height: 40px;
+    }
+</style>
+
+<!-- Back to Top Script -->
+<script>
+    const backToTop = document.getElementById("backToTop");
+
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+            backToTop.style.display = "block";
+        } else {
+            backToTop.style.display = "none";
+        }
+    });
+
+    backToTop.addEventListener("click", () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    });
+</script>

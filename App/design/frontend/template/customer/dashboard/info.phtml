@@ -1,0 +1,33 @@
+<?php
+$info = $this->getCustomerModel();
+?>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Personal Information</h5>
+        <button class="btn btn-sm btn-outline-primary">Edit</button>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <p class="mb-1 text-muted small">Name</p>
+                <p class="mb-0 fw-bold"><?php echo $info->getFirstName() . " " . $info->getLastName();
+                                        ?></p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <p class="mb-1 text-muted small">Email:</p>
+                <p class="mb-0 fw-bold"><?php echo $info->getEmail() ?></p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <p class="mb-1 text-muted small">Phone Number</p>
+                <p class="mb-0 fw-bold"><?php echo $info->getPhone() ?></p>
+            </div>
+            <div class="col-md-6 mb-3">
+                <p class="mb-1 text-muted small">userName</p>
+                <p class="mb-0 fw-bold"><?php echo $info->getUserName() ?></p>
+            </div>
+        </div>
+    </div>
+</div>

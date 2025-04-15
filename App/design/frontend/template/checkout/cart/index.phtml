@@ -1,11 +1,8 @@
 <?php
 
 $cartItems = $this->getCartItems();
-// mage::log($cartItems);
 $cart = $this->cartData();
 $shippingMethods = $this->getMethods();
-// $cartData = $this->getCart();
-
 $subtotal = 0;
 $shippingFee = 0; // Set a fixed shipping fee or calculate dynamically
 ?>

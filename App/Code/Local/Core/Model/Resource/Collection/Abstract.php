@@ -158,12 +158,11 @@ class Core_Model_Resource_Collection_Abstract
         if (isset($this->_select['LIMIT'])) {
             $orderBy = "";
 
-            $orderBy = sprintf("LIMIT %s", $this->_select["LIMIT"]["limit"]);
+            $orderBy = sprintf("LIMIT %s OFFSET %s", $this->_select["LIMIT"]["limit"], $this->_select["LIMIT"]["offset"]);
 
-            // }
+
             $query = $query . " " . $orderBy;
         }
-
         return $query;
     }
 
@@ -250,7 +249,7 @@ class Core_Model_Resource_Collection_Abstract
     {
         $this->_select["INNER_JOIN"][] = ["tablename" => $tablename, "condition" => $condition, "columns" => $columns];
         foreach ($columns as $alies => $columnName) {
-            // echo "1223";
+
             $this->_select["COLUMNS"][] = sprintf("%s.%s as %s", $tablename, $columnName, $alies);
         }
         return $this;
@@ -283,9 +282,9 @@ class Core_Model_Resource_Collection_Abstract
         $this->_select["ORDER_BY"] = ["columns" => $columns];
         return $this;
     }
-    public function limit($limit, $offset = '')
+    public function limit($limit, $offset = 0)
     {
-        $this->_select["LIMIT"] = ["limit" => $limit, "offset" => $offset];
+        $this->_select["LIMIT"] = ["limit" => $limit, "offset" => ($offset - 1) * $limit];
 
         return $this;
     }

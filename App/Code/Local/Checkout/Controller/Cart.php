@@ -24,6 +24,7 @@ class Checkout_Controller_Cart extends Core_Controller_Front_Action
         $email = $request->getParam("customer_email");
         $shippingAddress = Mage::getModel('checkout/cart_address');
         $billingAddress = Mage::getModel('checkout/cart_address');
+
         $cart = Mage::getSingleton('checkout/session')->getCart();
         $cartId = $cart->getCartId();
         $cart->setEmail($email);
@@ -36,8 +37,6 @@ class Checkout_Controller_Cart extends Core_Controller_Front_Action
             ->setEmail($email)
             ->save();
         $cart->save();
-        // mage::log($cart);
-        // die;
         $this->redirect('checkout/cart/placeorder');
     }
 
@@ -63,7 +62,7 @@ class Checkout_Controller_Cart extends Core_Controller_Front_Action
             ->updateItem($itemId, $productQuantity);
 
         $updateCart->save();
-        $this->redirect('checkout/cart/index');
+        $this->redirect(url: 'checkout/cart/index');
         return $updateCart;
     }
     public function addProductAction()
@@ -74,7 +73,11 @@ class Checkout_Controller_Cart extends Core_Controller_Front_Action
         $cart = $session->getCart();
 
         $cart->addProduct($cartData);
+
         $cart->save();
+        $this->getMessage()->addSuccess('success');
+
+
         $this->redirect('checkout/cart/index');
     }
     public function applyCouponAction()
